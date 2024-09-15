@@ -37,6 +37,7 @@
 - [Hardware implementation](#hardware-implementation)
   - [Device architecture](#device-architecture)
   - [Main board](#main-board)
+    - [Layout](#layout)
   - [Sensor board](#sensor-board)
   - [Final device](#final-device)
 - [Software implementation](#software-implementation)
@@ -327,15 +328,13 @@ The following colors are used to represent the functionality:
 
 The layout and assembled boards will be presented at the end.
 
-
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Device architecture -->
 ## Device architecture
 
+As mentioned previously, the functionality of the device is divided into two PCBs, as follows:
 
-The functionality of the device was divided into 2 PCBs, as follows:
-
-- **Board P1 ( Main board )**: supplies the voltage level needed by the components; the ESP32 and the sensors which don't need direct contact with the air ( light, accel + gyro, sound ) are placed on this board; the PM particle sensor connects to this bard using a header
-- **Board P2 ( Sensor board )**: the sensors which need direct contact with the air ( temperature, humidity, CO2, TVOC, air pressure ) are placed on this board
+- **Board P1 ( Main board )**: supplies the voltage levels needed by the components; the ESP32 and the sensors that don't require direct contact with the air ( light, accel + gyro ) are placed on this board; the PM particle and sound sensors connect to this board using cables
+- **Board P2 ( Sensor board )**: the sensors that require direct contact with the air ( temperature, humidity, CO2, TVOC, air pressure ) are placed on this board
 
 The architecture of the entire system can be seen in the figure below. 
 
@@ -343,21 +342,93 @@ The architecture of the entire system can be seen in the figure below.
 
 <img src="docs/hardware_implementation/device_architecture/device_architecture.png" width="55%" height="auto">
 
+The device is powered using a wall adapter. 
+Two MCP3221 I2C external ADC were placed as close as possible to the output of the the two analog sensors ( sound and gas ) to minimize interferences.
+This means that all sensors support I2c communication.
+
+The sensors require different voltage levels for logic ( 1.8V, 3.3V, and 5V ), while the ESP32 operates at 3.3V. 
+Therefore, two PCA9517A level shifters were used to interface all the components.
 
 
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Main board -->
 ## Main board
+
+**FIGURE 4: main board functional block - power supply**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_power_supply.png" width="30%" height="auto">
 
+Multiple voltage levels ( 5V, 3V3 and 1V8 ) are needed for the device to function properly ( **Figure 4** ). 
+To achieve this, three LDOs were used in a daisy chain configuration to minimize power dissipation in the second and third regulators. 
+The downside of using a single LDO to step down from the input voltage ( Vin ) to 5V is the significant power dissipation, which generates heat.
+
+
+**FIGURE 5: main board functional block - programmer**
+
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_programmer.png" width="40%" height="auto">
+
+The laptop connects to the CP2102N using the micro USB connector. 
+The ESP32 has a built-in bootloader, allowing the microcontroller to be programmed via UART without needing an external programmer.
+
+
+**FIGURE 6: main board functional block - microcontroller**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_microcontroller.png" width="30%" height="auto">
 
+All the sensors support I2C ( the 2 analog ones have provided an I2C external ADC each ).
+The challenge with I2C is that it operates on a single bus, where all sensors are connected. 
+If one sensor malfunctions, it might pull the SDA line low, potentially halting the entire bus indefinitely. 
+To prevent this, since the ESP32 provides two I2C serial modules, the sensors were split into two groups, each having its own bus.
+If anything happens to one bus, the rest of the sensors will keep working until the problem is fixed.
+
+
+**FIGURE 7: main board functional block - level shifter**
+
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_level_shifter.png" width="35%" height="auto">
+
+Two PCA9517A level shifters were used to accommodate the I2C logic level differences between the ESP32 and the 5V and 1.8V sensors.
+
+**FIGURE 8: main board functional block - sensors**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_sensors.png" width="30%" height="auto">
 
+The ambient light sensor ( OPT3001 ) and the 6-axis IMU sensor ( BMI270 ) are placed on this board directly, while the PM sensor ( SN-GCJA5L ) and the sound sensor ( SEN0232 ) connect to the main board via multiple cables.
+
+
+**FIGURE 9: main board functional block - sound to I2C**
+
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_sound_to_I2C.png" width="40%" height="auto">
+
+The analog voltage provided by the SEN0232 is measured by an MCP3221, and the result is read by the ESP32 via I2C.
+
+
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Layout -->
+### Layout
+**FIGURE 10: main board layout**
+
+<img src="docs/hardware_implementation/main_board/layout/main_board_layout.png" width="65%" height="auto">
+
+The layout of the main board is shown in **Figure 10**.
+The ESP's antenna is positioned outside the board, on the right side.
+The MCP3221 for the sound sensor is placed as close as possible to the input connector. 
+The board's power distribution follows a star configuration. 
+The TVS diodes are placed between the micro USB connector and the CP2102N bridge.
+
+
+**FIGURE 11: main board top and bot view**
+
+<img src="docs/hardware_implementation/main_board/layout/main_board_3D_model_top.png" width="60%" height="auto">
+
+<img src="docs/hardware_implementation/main_board/layout/main_board_3D_model_bot.png" width="60%" height="auto">
+
+The board was shaped to accommodate the sound sensor so that they could be stacked. 
+The overall profile of the boards was minimized. 
+All components, except for the ESP32, IMU, and light sensors, are placed on the bottom side of the board.
+
+
+
 
 
 

@@ -10,6 +10,12 @@
 <!-- ______________________________________________________________________________________________________________________________________________________ INTRODUCTION -->
 # :rocket: Introduction
 
+Air quality is a global issue, both short and long term exposure to air pollution can cause a range of health issues, including respiratory diseases, heart disease, cognitive deficits, and more. 
+Improving air quality not only helps prevent these health issues but also boosts productivity levels.
+
+The aim of this project is to develop a custom hardware and software solution for monitoring multiple air quality parameters. 
+The system will provide real-time data to users, enabling them to assess air quality and make informed decisions.
+
 
 <!-- ______________________________________________________________________________________________________________________________________________________ TABLE OF CONTENT -->
 # :ledger:Table of content
@@ -39,12 +45,16 @@
   - [Main board](#main-board)
     - [Layout](#layout)
   - [Sensor board](#sensor-board)
+    - [Layout](#layout-1)
   - [Final device](#final-device)
 - [Software implementation](#software-implementation)
   - [Microcontroller](#microcontroller)
   - [Dashboard](#dashboard)
-- [:partying\_face: Results](#partying_face-results)
+    - [Node-RED](#node-red)
+    - [MQTT](#mqtt)
+    - [Website](#website)
 - [:fire: Demo](#fire-demo)
+- [:partying\_face: Results](#partying_face-results)
 - [:star2: Future work](#star2-future-work)
 - [:checkered\_flag: Conclusions](#checkered_flag-conclusions)
 - [:mag\_right: Resources](#mag_right-resources)
@@ -54,20 +64,30 @@
 <!-- ______________________________________________________________________________________________________________________________________________________ ABOUT THE PROJECT -->
 # :page_facing_up: About the project
 
-
-The device must monitor the following parameters:
+The following parameters must be monitored:
 1. temperature
 2. humidity
 3. air pressure
-4. CO2 quantity
+4. CO2 concentration
 5. PM particles density
 6. TVOC
 7. luminosity
-8. acceleration and gyro
- 
-A customized device was developed to achieve the previously mentioned objectives.
+8. acceleration
+9. angular acceleration
 
-The acronyms used during the device presentation can be found in the [Glossary](#mag_right-glossary) section.
+A customized device was developed to integrate multiple sensors for tracking these parameters.
+
+The device is split into two PCBs, based on their functionality. 
+The sensor board contains the sensors that need direct contact with the air, and the main board accommodates the rest of the components.
+This design protects the components on the main board from external environmental factors.
+
+The microcontroller periodically reads the sensor data and sends it to a server via WiFi using the MQTT protocol, where the data is stored. 
+The user can interact with the archived data using a website created using Node-RED. 
+From there, users can view the data and execute various queries to extract data sets for further processing, such as applying different filters on them.
+
+
+The acronyms used during the device presentation can be found in the [Glossary](#mag_right-glossary) section, and the resources in the [Resources](#mag_right-resources) section.
+
 
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ PROGRAMS USED -->
 ## Programs used
@@ -435,32 +455,178 @@ All components, except for the ESP32, IMU, and light sensors, are placed on the 
 
 ## Sensor board
 
+
+**FIGURE 12: Sensor board functional block - sensors**
+
 <img src="docs/hardware_implementation/sensor_board/functional_blocks/sensor_board_functional_block_sensors.png" width="50%" height="auto">
+
+The sensors that require direct contact with the air ( temperature, humidity, CO2, air pressure, and TVOC ) are placed on this PCB.
+
+**FIGURE 13: Sensor board functional block - sound to I2C**
 
 <img src="docs/hardware_implementation/sensor_board/functional_blocks/sensor_board_functional_block_TVOC_to_I2C.png" width="40%" height="auto">
 
+Similar to the sound sensor, the analog voltage provided by the MiCS-5524 is measured by an MCP3221, and the result is read by the ESP32 via I2C.
 
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Layout -->
+### Layout
+
+**FIGURE 14: Sensor board layout**
+
+<img src="docs/hardware_implementation/sensor_board/layout/sensor_board_layout.png" width="60%" height="auto">
+
+The layout of the sensor board is shown in **Figure 25**.
+The sensors were placed to minimize the width of the board.
+
+
+**FIGURE 15: Sensor board top and bot view**
+
+<img src="docs/hardware_implementation/sensor_board/layout/sensor_board_3D_model_top.png" width="40%" height="auto">
+
+<img src="docs/hardware_implementation/sensor_board/layout/sensor_board_3D_model_bot.png" width="40%" height="auto">
+
+The sensor board is shown in **Figure 15**.
+The board can be fixed in place using two screws.
+
+
+
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Final device -->
 ## Final device
 
-<img src="docs/hardware_implementation/final_device/final_device.jpeg" width="20%" height="auto">
+**FIGURE 16: Final device**
 
+<img src="docs/hardware_implementation/final_device/final_device.jpeg" width="60%" height="auto">
+
+The final device is shown in **Figure 16**.
+The sensor board is mounted on the main board using the two headers.
+The PM and sound boards are connected to the main board using multiple cables.
+The assembly is held in place by 4 screws, 4 nuts, and 4 spacers.
+
+The device could be integrated into a housing with two compartments: one for the sound board and main board, and one for the PM and sensor board.
+While the sound module is large and cannot be placed outside, the microphone could be carefully desoldered and attached to the first compartment.
+
+
+
+
+
+
+
+
+<!-- ______________________________________________________________________________________________________________________________________________________ SOFTWARE IMPLEMENTATION -->
 # Software implementation
 
+In this section, the software implementation of the device will be detailed.
+
+The software architecture of the system was designed to be highly scalable, allowing the microcontroller to easily integrate new sensors and enabling the website to support multiple devices.
+
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Microcontroller -->
 ## Microcontroller
+
+
+**FIGURE 17: I2C driver**
 
 <img src="docs/software_implementation/microcontroller/I2C_DRIVER_class_structure.png" width="50%" height="auto">
 
+**FIGURE 18: Sensor class**
+
 <img src="docs/software_implementation/microcontroller/SENSOR_class_structure.png" width="50%" height="auto">
 
+
+
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Dashboard -->
 ## Dashboard
 
-<img src="docs/software_implementation/dashboard/dashboard_final_interface.png" width="170%" height="auto">
+First, a brief summary of the technology used will be presented, followed by a discussion on the website's implementation.
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Node-RED -->
+### Node-RED
+
+**FIGURE 19: Node-RED**
+
+<img src="docs/software_implementation/dashboard/node_red/Node_RED.png" width="15%" height="auto">
+
+Node-RED was chosen to implement the website, primarily because it is easier to use compared to other alternatives on the market, and new devices can be integrated easily. 
+This API was developed by IBM specifically for IoT applications as a flow-based, low-code development tool for visual programming.
+
+The website's functionality is achieved by connecting multiple nodes to each other. 
+Information travels in the form of packets between these nodes. 
+The programming language used for implementation is JavaScript. 
+Most common needs are addressed by a wide range of standard nodes available, making the development process smooth and fast.
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ asdasdsadsa -->
+### MQTT
+
+**FIGURE 20: MQTT**
+
+<img src="docs/software_implementation/dashboard/mqtt/MQTT.png" width="30%" height="auto">
+
+The communication between the ESP32 and the website is accomplished using the MQTT network protocol. 
+It operates over the TCP/IP stack, which prevents packet loss by automatically retransmitting dropped packets. 
+This ensures that there are no gaps in the data sets.
+
+
+**FIGURE 21: MQTT topology**
+
+<img src="docs/software_implementation/dashboard/mqtt/MQTT_topology.png" width="60%" height="auto">
+
+The protocol is implemented using a star topology, meaning the system will continue to operate as long as the central node remains functional.
+
+The entities can be classified into two categories, as follows:
++ **MQTT client**: a device that connects to the network; there can be multiple clients on a single network
++ **MQTT broker**: manages all messages from clients and directs them to their destination; there is only one broker per network
+
+Messages are sent and received using a publish-subscribe strategy, which involves a client sending data to a broker. 
+The advantage of this strategy is that the device doesn't need to account for how many clients will receive the data, as the broker manages the distribution.
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Website -->
+### Website
+
+The MQTT server is hosted on a Raspberry Pi.
+The acquired data is saved in a .CSV file.
+The user can extract the data stored in the database by either selecting a certain time interval or downloading the entire file.
+
+
+
+**FIGURE 22: Dashboard final interface**
+
+<img src="docs/software_implementation/dashboard/website/dashboard_final_interface.png" width="190%" height="auto">
+
+The final website is shown in **Figure 22**.
+The items are organized into four columns: three for the sensor readings graphs and one for downloading data. 
+The sensor data is grouped by type.
+
+
+<!-- ______________________________________________________________________________________________________________________________________________________ DEMO -->
+# :fire: Demo
 
 <!-- ______________________________________________________________________________________________________________________________________________________ RESULTS -->
 # :partying_face: Results
 
-<!-- ______________________________________________________________________________________________________________________________________________________ DEMO -->
-# :fire: Demo
+The problem with monitoring these air quality parameters is that there wasn't a clear reference available to compare the measurements against. 
+The tolerances presented in the sensor datasheets are provided for some specific conditions.
+After integrating the sensors onto the PCBs, their values might change. 
+To validate the configuration, the device's readings should be compared to those of multiple calibrated pieces of equipment.
+
+
+The device generates a significant amount of heat due to the 5V LDO ( **Figure 4** ) because of its power dissipation. 
+However, this issue could easily be resolved by placing a buck converter before the LDO to lower the voltage to a more acceptable level, such as 6V. 
+The same steps could be followed for the 3V3 and 1V8 voltage levels.
+
+
+The website responds slowly when the sampling period is short, as many graphs need to be refreshed frequently. 
+This could be addressed by exploring other similar tools available on the market
+
 
 <!-- ______________________________________________________________________________________________________________________________________________________ FUTURE WORK -->
 # :star2: Future work

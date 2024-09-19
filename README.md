@@ -3,7 +3,7 @@
 
 <div align="center">
     <img src="docs/introduction/final_device.jpeg" width="65%" height="auto"> 
-    <h1>Air quality monitoring system ( documentation in progress )</h1>
+    <h1>Air quality monitoring system</h1>
 </div>
 
 
@@ -15,6 +15,9 @@ Improving air quality not only helps prevent these health issues but also boosts
 
 The aim of this project is to develop a custom hardware and software solution for monitoring multiple air quality parameters. 
 The system will provide real-time data to users, enabling them to assess air quality and make informed decisions.
+
+A video was recorded to showcase part of the device's functionality, and it can be viewed in the [:fire: Demo](#fire-demo) section. 
+Multiple photos of the system can be seen in the [Hardware part 1](#layout), [Hardware part 2](#layout-1) and [Website](#website) sections.
 
 
 <!-- ______________________________________________________________________________________________________________________________________________________ TABLE OF CONTENT -->
@@ -55,7 +58,6 @@ The system will provide real-time data to users, enabling them to assess air qua
     - [Website](#website)
 - [:fire: Demo](#fire-demo)
 - [:partying\_face: Results](#partying_face-results)
-- [:star2: Future work](#star2-future-work)
 - [:checkered\_flag: Conclusions](#checkered_flag-conclusions)
 - [:mag\_right: Resources](#mag_right-resources)
 - [:question: Glossary](#question-glossary)
@@ -134,8 +136,8 @@ The following list contains the components needed to build the device:
         + [ Link datasheet OPT3001 ]( https://www.ti.com/lit/ds/symlink/opt3001.pdf?ts=1630915821822 )
     + 1x SGP40 TVOC sensor
         + [ Link datasheet SGP40 ]( https://ro.mouser.com/datasheet/2/682/Sensirion_Gas_Sensors_Datasheet_SGP40-2001008.pdf )
-    + 1x MICS5524 TVOC analog sensor
-        + [ Link datasheet MICS5524 ]( https://cdn-shop.adafruit.com/product-files/3199/MiCS-5524.pdf )
+    + 1x MiCS-5524 TVOC analog sensor
+        + [ Link datasheet MiCS-5524 ]( https://cdn-shop.adafruit.com/product-files/3199/MiCS-5524.pdf )
     + 1x SN-GCJA5L PM particles sensor
         + [ Link datasheet SN-GCJA5L ]( https://www.mouser.com/catalog/specsheets/Panasonic_SN-GCJA5%20Data%20Sheet.pdf )
     + 1x BMI270 6 axes IMU sensor
@@ -445,14 +447,10 @@ The TVS diodes are placed between the micro USB connector and the CP2102N bridge
 
 The board was shaped to accommodate the sound sensor so that they could be stacked. 
 The overall profile of the boards was minimized. 
-All components, except for the ESP32, IMU, and light sensors, are placed on the bottom side of the board.
+All components, except for the ESP32 and light sensor, are placed on the bottom side of the board.
 
 
-
-
-
-
-
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Sensor board -->
 ## Sensor board
 
 
@@ -469,7 +467,6 @@ The sensors that require direct contact with the air ( temperature, humidity, CO
 Similar to the sound sensor, the analog voltage provided by the MiCS-5524 is measured by an MCP3221, and the result is read by the ESP32 via I2C.
 
 
-
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Layout -->
 ### Layout
 
@@ -477,7 +474,7 @@ Similar to the sound sensor, the analog voltage provided by the MiCS-5524 is mea
 
 <img src="docs/hardware_implementation/sensor_board/layout/sensor_board_layout.png" width="60%" height="auto">
 
-The layout of the sensor board is shown in **Figure 25**.
+The layout of the sensor board is shown in **Figure 14**.
 The sensors were placed to minimize the width of the board.
 
 
@@ -528,17 +525,48 @@ The software architecture of the system was designed to be highly scalable, allo
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Microcontroller -->
 ## Microcontroller
 
+The microcontroller's code was developed using OOP concepts such as encapsulation, inheritance, and polymorphism, as the solution needs to be highly scalable. 
+However, there are some downsides, including increased overhead and RAM usage due to features like VTABLEs and VPOINTERs for dynamic dispatch. 
+Nevertheless, the ESP32 has more than enough resources to handle these drawbacks.
+
+
+The following classes were created to meet the requirements and encapsulate the functionalities:
++ I2C DRIVER class
++ SENSOR class
++ a dedicated class for each sensor used
++ MCP3221xxT class ( the ADC on I2C used by the analog sensors )
+
 
 **FIGURE 17: I2C driver**
 
 <img src="docs/software_implementation/microcontroller/I2C_DRIVER_class_structure.png" width="50%" height="auto">
 
+The I2C_DRIVER class handles I2C communication. 
+Its members are public, allowing them to be accessed from anywhere in the program.
+Two buffers are used for read and write operations. 
+The "end_of_transmission_type" parameter specifies whether a restart condition must be issued or not after a write operation. 
+A timeout mechanism was implemented to prevent the sensors from halting the communication.
+The functions send_read_I2C_bus() and read_I2C_bus() return true if the operation was completed successfully, and false otherwise.
+
+
 **FIGURE 18: Sensor class**
 
 <img src="docs/software_implementation/microcontroller/SENSOR_class_structure.png" width="50%" height="auto">
 
+The SENSOR class defines the format that all sensors must adhere to. 
+The protected members are accessible only from derived classes. 
+The pure virtual functions have no implementation in this class, but they must be implemented in the derived classes. 
+Essentially, this structure defines the sensor interface. 
+The virtual keyword indicates that the functions are bound at runtime using dynamic dispatch, allowing for different implementations based on the specific sensor’s technical documentation.
 
 
+**FIGURE 19: Sensor inheritance structure**
+
+<img src="docs/software_implementation/microcontroller/Sensor_inheritance_structure.png" width="40%" height="auto">
+
+The sensor class structure is shown in **Figure 19**
+The digital sensor classes inherit from the SENSOR class, while the analog sensor classes inherit from both the SENSOR and MCP3221xxT classes. 
+The MCP3221xxT class provides I2C functionality to the analog sensors.
 
 
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Dashboard -->
@@ -550,7 +578,7 @@ First, a brief summary of the technology used will be presented, followed by a d
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Node-RED -->
 ### Node-RED
 
-**FIGURE 19: Node-RED**
+**FIGURE 20: Node-RED**
 
 <img src="docs/software_implementation/dashboard/node_red/Node_RED.png" width="15%" height="auto">
 
@@ -566,7 +594,7 @@ Most common needs are addressed by a wide range of standard nodes available, mak
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ asdasdsadsa -->
 ### MQTT
 
-**FIGURE 20: MQTT**
+**FIGURE 21: MQTT**
 
 <img src="docs/software_implementation/dashboard/mqtt/MQTT.png" width="30%" height="auto">
 
@@ -575,7 +603,7 @@ It operates over the TCP/IP stack, which prevents packet loss by automatically r
 This ensures that there are no gaps in the data sets.
 
 
-**FIGURE 21: MQTT topology**
+**FIGURE 22: MQTT topology**
 
 <img src="docs/software_implementation/dashboard/mqtt/MQTT_topology.png" width="60%" height="auto">
 
@@ -597,18 +625,29 @@ The acquired data is saved in a .CSV file.
 The user can extract the data stored in the database by either selecting a certain time interval or downloading the entire file.
 
 
-
-**FIGURE 22: Dashboard final interface**
+**FIGURE 23: Dashboard final interface**
 
 <img src="docs/software_implementation/dashboard/website/dashboard_final_interface.png" width="190%" height="auto">
 
-The final website is shown in **Figure 22**.
+The final website is shown in **Figure 23**.
 The items are organized into four columns: three for the sensor readings graphs and one for downloading data. 
 The sensor data is grouped by type.
 
 
 <!-- ______________________________________________________________________________________________________________________________________________________ DEMO -->
 # :fire: Demo
+
+A video was created to showcase the functionality of the device.
+
+> [!CAUTION]
+> The video is uploaded on Google  Drive, and the rendering quality in browser is very low, so for optimal performance, it should be downloaded before viewing. 
+> I'm sorry for the watermark.
+
+The video link is listed below:
++ testing temperature, CO2, light, and sound, followed by downloading the data ( [ link ]( https://drive.google.com/file/d/1O22NpwT8j0dOTAGnGvBCRcS-pP-F0plG/view?usp=sharing ) )
+
+There is an offset between the temperature readings due to the heat generated by the 5V LDO and the sensor's placement on the second board.
+
 
 <!-- ______________________________________________________________________________________________________________________________________________________ RESULTS -->
 # :partying_face: Results
@@ -628,18 +667,51 @@ The website responds slowly when the sampling period is short, as many graphs ne
 This could be addressed by exploring other similar tools available on the market
 
 
-<!-- ______________________________________________________________________________________________________________________________________________________ FUTURE WORK -->
-# :star2: Future work
-
-
 <!-- ______________________________________________________________________________________________________________________________________________________ CONCLUSION -->
 # :checkered_flag: Conclusions
+
+In conclusion, the project's aim to design a combined hardware and software solution for implementing a customized device capable of acquiring, monitoring, and displaying multiple air quality parameters was successfully accomplished. The system provides real-time data to users, enabling them to assess air quality and make informed decisions.
+
+While there are still many improvements to be made, the designed architecture facilitates easy integration of these enhancements.
 
 
 <!-- ______________________________________________________________________________________________________________________________________________________ RESOURCES -->
 # :mag_right: Resources
 
++ ESP32-­WROVER­-B datasheet, Espressif Systems, [ link ]( https://www.espressif.com/sites/default/files/documentation/esp32-wrover-b_datasheet_en.pdf )
++ ADT7410 datasheet, Analog Devices, [ link ]( https://ro.mouser.com/datasheet/2/609/ADT7410-1503456.pdf )
++ SHT85 datasheet, Sensirion, [ link ]( https://www.mouser.com/datasheet/2/682/Sensirion_Humidity_Sensors_SHT85_Datasheet-1501398.pdf )
++ SEN0232 datasheet, Dfrobot, [ link ]( https://www.mouser.de/pdfdocs/SEN0232_Web.pdf )
++ SCD30 datasheet, Sensirion, [ link ]( https://www.mouser.com/datasheet/2/682/Sensirion_CO2_Sensors_SCD30_Datasheet-1901872.pdf )
++ OPT3001 datasheet, Texas Instruments, [ link ]( https://www.ti.com/lit/ds/symlink/opt3001.pdf?ts=1630915821822 )
++ SGP40 datasheet, Sensirion, [ link ]( https://ro.mouser.com/datasheet/2/682/Sensirion_Gas_Sensors_Datasheet_SGP40-2001008.pdf )
++ MiCS-5524 datasheet, SGX Sensortech, [ link ]( https://cdn-shop.adafruit.com/product-files/3199/MiCS-5524.pdf )
++ SN-GCJA5 datasheet, Panasonic, [ link ]( https://www.mouser.com/catalog/specsheets/Panasonic_SN-GCJA5%20Data%20Sheet.pdf )
++ BMI270 datasheet, Bosch, [ link ]( https://download.mikroe.com/documents/datasheets/bst-bmi270-ds000-2_datasheet.pdf )
++ BME280 datasheet, Bosch, [ link ]( https://www.mouser.com/datasheet/2/783/BST-BME280-DS002-1509607.pdf )
++ CP2102N datasheet, Silicon Labs, [ link ]( https://www.silabs.com/documents/public/data-sheets/cp2102n-datasheet.pdf )
++ PCA9517A datasheet, ON Semiconductor, [ link ]( https://www.farnell.com/datasheets/2578416.pdf )
++ MCP3221 datasheet, Microchip, [ link ]( https://ro.mouser.com/datasheet/2/268/mchp_s_a0002844534_1-2274805.pdf )
++ node-red-dashboard, Node-RED, [ link ]( https://flows.nodered.org/node/node-red-dashboard )
+
 
 <!-- ______________________________________________________________________________________________________________________________________________________ GLOSSARY -->
 # :question: Glossary
 
++ ADC - Analog to Digital Converter
++ GUI - Graphical User Interface
++ I2C - Inter-Integrated Circuit
++ IMU - Inertial Measurement Unit
++ LDO - Low DropOut
++ MQTT - Message Queuing Telemetry Transport
++ OOP - Object-Oriented Programming
++ PCB - Printed Circuit Board
++ PM - Particulate Matter
++ PTFE - PolyTetraFluoroEthylene
++ SAR - Successive Approximation Register
++ SMBus - System Management Bus
++ SPI - Serial Peripheral Interface
++ TVOC - Total Volatile Organic Compound
++ UART - Universal Asynchronous Receiver / Transmitter
++ USB - Universal Serial Bus
++ VOC - Volatile Organic Compounds

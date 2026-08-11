@@ -2,47 +2,53 @@
 
 
 <div align="center">
-    <img src="docs/introduction/final_device.jpeg" width="65%" height="auto"> 
-    <h1>Air quality monitoring system</h1>
+    <h1>Indoor Air Quality Monitoring System</h1>
+    <img src="docs/introduction/final_device.jpeg" width="65%" height="auto">
 </div>
 
 
-<!-- ______________________________________________________________________________________________________________________________________________________ INTRODUCTION -->
-# :rocket: Introduction
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 🚀 Introduction
 
-Air quality is a global issue, both short and long term exposure to air pollution can cause a range of health issues, including respiratory diseases, heart disease, cognitive deficits, and more. 
-Improving air quality not only helps prevent these health issues but also boosts productivity levels.
+This project implements a custom embedded system for **real-time indoor air quality monitoring**.
+The device measures multiple environmental parameters and transmits the collected data to a dashboard for visualization and analysis.
 
-The aim of this project is to develop a custom hardware and software solution for monitoring multiple air quality parameters. 
-The system will provide real-time data to users, enabling them to assess air quality and make informed decisions.
+The system combines **custom hardware, embedded firmware, wireless communication, and a data visualization dashboard**, providing a complete end-to-end monitoring solution.
 
-A video was recorded to showcase part of the device's functionality, and it can be viewed in the [:fire: Demo](#fire-demo) section. 
-Multiple photos of the system can be seen in the [Hardware part 1](#layout), [Hardware part 2](#layout-1) and [Website](#website) sections.
+A demonstration of the system is available in the [Demo](#-demo) section.
+Additional hardware and dashboard photos are available in the [Hardware Part 1](#layout), [Hardware Part 2](#layout-1), and [Dashboard](#final-dashboard) sections.
 
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 📒 Table of content
 
-<!-- ______________________________________________________________________________________________________________________________________________________ TABLE OF CONTENT -->
-# :ledger:Table of content
-
-- [:rocket: Introduction](#rocket-introduction)
-- [:ledger:Table of content](#ledgertable-of-content)
-- [:page\_facing\_up: About the project](#page_facing_up-about-the-project)
-  - [Programs used](#programs-used)
-  - [File structure](#file-structure)
-- [:gear: Components](#gear-components)
-  - [ESP32-­WROVER­-IB](#esp32-wrover-ib)
-  - [ADT7410](#adt7410)
-  - [SHT85](#sht85)
-  - [SEN0232](#sen0232)
-  - [OPT3001](#opt3001)
-  - [MiCS-5524](#mics-5524)
-  - [SN-GCJA5L](#sn-gcja5l)
-  - [SGP40](#sgp40)
-  - [BMI270](#bmi270)
-  - [BME280](#bme280)
-  - [SCD30](#scd30)
-  - [CP2102N](#cp2102n)
-  - [PCA9517A](#pca9517a)
-  - [MCP3221](#mcp3221)
+- [🚀 Introduction](#-introduction)
+- [📒 Table of content](#-table-of-content)
+- [📄 About the Project](#-about-the-project)
+  - [Monitored Parameters](#monitored-parameters)
+  - [System Architecture](#system-architecture)
+- [🛠️ Development Tools](#️-development-tools)
+- [📁 Repository Structure](#-repository-structure)
+- [⚙️ Components](#️-components)
+  - [Microcontroller](#microcontroller)
+    - [ESP32-­WROVER­-IB](#esp32-wrover-ib)
+  - [Temperature and humidity](#temperature-and-humidity)
+    - [ADT7410](#adt7410)
+    - [SHT85](#sht85)
+    - [BME280](#bme280)
+    - [SCD30](#scd30)
+  - [Air quality](#air-quality)
+    - [SN-GCJA5L](#sn-gcja5l)
+    - [SGP40](#sgp40)
+    - [MiCS-5524](#mics-5524)
+  - [Sound](#sound)
+    - [SEN0232](#sen0232)
+  - [Light and motion](#light-and-motion)
+    - [OPT3001](#opt3001)
+    - [BMI270](#bmi270)
+  - [Interface and support](#interface-and-support)
+    - [CP2102N](#cp2102n)
+    - [PCA9517A](#pca9517a)
+    - [MCP3221](#mcp3221)
 - [Hardware implementation](#hardware-implementation)
   - [Device architecture](#device-architecture)
   - [Main board](#main-board)
@@ -50,289 +56,375 @@ Multiple photos of the system can be seen in the [Hardware part 1](#layout), [Ha
   - [Sensor board](#sensor-board)
     - [Layout](#layout-1)
   - [Final device](#final-device)
-- [Software implementation](#software-implementation)
-  - [Microcontroller](#microcontroller)
+- [💻 Software implementation](#-software-implementation)
+  - [Microcontroller](#microcontroller-1)
   - [Dashboard](#dashboard)
     - [Node-RED](#node-red)
     - [MQTT](#mqtt)
-    - [Website](#website)
-- [:fire: Demo](#fire-demo)
-- [:partying\_face: Results](#partying_face-results)
-- [:checkered\_flag: Conclusions](#checkered_flag-conclusions)
-- [:mag\_right: Resources](#mag_right-resources)
-- [:question: Glossary](#question-glossary)
+    - [Final dashboard](#final-dashboard)
+- [🔥 Demo](#-demo)
+- [🥳 Results and limitations](#-results-and-limitations)
+- [🏁 Conclusions](#-conclusions)
+- [🔎 Resources](#-resources)
+- [❓ Glossary](#-glossary)
 
 
-<!-- ______________________________________________________________________________________________________________________________________________________ ABOUT THE PROJECT -->
-# :page_facing_up: About the project
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 📄 About the Project
 
-The following parameters must be monitored:
-1. temperature
-2. humidity
-3. air pressure
-4. CO2 concentration
-5. PM particles density
-6. TVOC
-7. luminosity
-8. acceleration
-9. angular acceleration
-
-A customized device was developed to integrate multiple sensors for tracking these parameters.
-
-The device is split into two PCBs, based on their functionality. 
-The sensor board contains the sensors that need direct contact with the air, and the main board accommodates the rest of the components.
-This design protects the components on the main board from external environmental factors.
-
-The microcontroller periodically reads the sensor data and sends it to a server via WiFi using the MQTT protocol, where the data is stored. 
-The user can interact with the archived data using a website created using Node-RED. 
-From there, users can view the data and execute various queries to extract data sets for further processing, such as applying different filters on them.
+This project implements a **custom embedded system for indoor environmental monitoring**, combining custom PCBs, multiple sensors, embedded firmware, Wi-Fi connectivity, MQTT communication, and a Node-RED dashboard.
 
 
-The acronyms used during the device presentation can be found in the [Glossary](#mag_right-glossary) section, and the resources in the [Resources](#mag_right-resources) section.
+## Monitored Parameters
+
+* Temperature
+* Humidity
+* Atmospheric pressure
+* CO₂ concentration
+* Particulate matter ( PM )
+* Total volatile organic compounds ( TVOC )
+* Luminosity
+* Acceleration
+* Angular acceleration
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ PROGRAMS USED -->
-## Programs used
+## System Architecture
 
-Multiple tools were utilized during the development of the project, and they are listed below:
-+ Altium Designer: schematic and PCB designing
-+ Arduino: embedded programming
+The device is divided into two PCBs based on functionality:
 
-A logic analyzer was used for low level debugging.
+* **Sensor board** — contains the environmental sensors and components requiring direct exposure to the surrounding air.
+* **Main board** — contains the microcontroller, communication interfaces, power management, and remaining system components.
+
+This separation isolates the main electronics from direct environmental exposure while providing a modular hardware architecture.
+
+The microcontroller periodically acquires sensor data and transmits it over **Wi-Fi using MQTT**.
+The data is stored on a server and made available through a **Node-RED web dashboard**, where users can visualize historical measurements and perform queries and filtering for further analysis.
+
+Additional terminology and external resources are available in the [Glossary](#-glossary) and [Resources](#-resources) sections.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ FILE STRUCTURE -->
-## File structure
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 🛠️ Development Tools
 
-The file structure of the project can be seen in the following figure:
+* **Altium Designer** — schematic capture and PCB design
+* **Arduino IDE** — embedded firmware development
+* **Logic analyzer** — low-level debugging and communication analysis
+
+
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 📁 Repository Structure
+
 ```
 .
-├── docs
-│   └── images ( photos used in README )
+├── docs/
+│   └── images/    # Images used in the documentation
 └── README.md
 ```
 
-<!-- </details> -->
 
-<!-- ______________________________________________________________________________________________________________________________________________________ COMPONENTS -->
-# :gear: Components
-    
-In this section, the components used to implement the device will be presented. 
-At first, the component list will be shown, after which the most important capabilities of the main components will be detailed.
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# ⚙️ Components
 
-The following list contains the components needed to build the device:
-+ main components
-    + 1x ESP32-­WROVER­-B microcontroller
-        + [ Link datasheet ESP32-­WROVER­-B ]( https://www.espressif.com/sites/default/files/documentation/esp32-wrover-b_datasheet_en.pdf )
-    + 1x ADT7410 temperature sensor
-        + [ Link datasheet ADT7410 ]( https://ro.mouser.com/datasheet/2/609/ADT7410-1503456.pdf )
-    + 1x SHT85 temperature and humidity sensor
-        + [ Link datasheet SHT85 ]( https://www.mouser.com/datasheet/2/682/Sensirion_Humidity_Sensors_SHT85_Datasheet-1501398.pdf )
-    + 1x SEN0232 sound level sensor
-        + [ Link datasheet SEN0232 ]( https://www.mouser.de/pdfdocs/SEN0232_Web.pdf )
-    + 1x SCD30 CO2, humidity, and temperature sensor
-        + [ Link datasheet SCD30 ]( https://www.mouser.com/datasheet/2/682/Sensirion_CO2_Sensors_SCD30_Datasheet-1901872.pdf )
-    + 1x OPT3001 ambient light sensor
-        + [ Link datasheet OPT3001 ]( https://www.ti.com/lit/ds/symlink/opt3001.pdf?ts=1630915821822 )
-    + 1x SGP40 TVOC sensor
-        + [ Link datasheet SGP40 ]( https://ro.mouser.com/datasheet/2/682/Sensirion_Gas_Sensors_Datasheet_SGP40-2001008.pdf )
-    + 1x MiCS-5524 TVOC analog sensor
-        + [ Link datasheet MiCS-5524 ]( https://cdn-shop.adafruit.com/product-files/3199/MiCS-5524.pdf )
-    + 1x SN-GCJA5L PM particles sensor
-        + [ Link datasheet SN-GCJA5L ]( https://www.mouser.com/catalog/specsheets/Panasonic_SN-GCJA5%20Data%20Sheet.pdf )
-    + 1x BMI270 6 axes IMU sensor
-        + [ Link datasheet BMI270 ]( https://download.mikroe.com/documents/datasheets/bst-bmi270-ds000-2_datasheet.pdf )
-    + 1x BME280 pressure, humidity and temperature sensor
-        + [ Link datasheet BME280 ]( https://www.mouser.com/datasheet/2/783/BST-BME280-DS002-1509607.pdf )
-    + 1x CP2102N USB-UART bridge
-        + [ Link datasheet CP2102N ]( https://www.silabs.com/documents/public/data-sheets/cp2102n-datasheet.pdf )
-    + 1x PCA9517A level shifter I2C bus repeater
-        + [ Link datasheet PCA9517A ]( https://www.farnell.com/datasheets/2578416.pdf )
-    + 1x MCP3221 external 12-bits ADC
-        + [ Link datasheet MCP3221 ]( https://ro.mouser.com/datasheet/2/268/mchp_s_a0002844534_1-2274805.pdf )
-+ auxiliary components
-    + 1x barrel jack connector and wall adapter
-    + 4x M3x30 screws and 4x spacers
-    + multiple male and female headers, cables & test points
+The system uses an **ESP32-WROVER-B** as the main controller and integrates dedicated sensors for environmental, air-quality, motion, and light measurements.
+
+The main components are listed below:
+
+| Component      | Quantity | Purpose                                                     | Link                                                                                                       |
+| :------------- | :------: | :---------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- |
+| ESP32-WROVER-B |     1    | Main microcontroller and Wi-Fi connectivity                 | [Datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-wrover-b_datasheet_en.pdf)   |
+| ADT7410        |     1    | Temperature measurement                                     | [Datasheet](https://ro.mouser.com/datasheet/2/609/ADT7410-1503456.pdf)                                     |
+| SHT85          |     1    | Temperature and humidity measurement                        | [Datasheet](https://www.mouser.com/datasheet/2/682/Sensirion_Humidity_Sensors_SHT85_Datasheet-1501398.pdf) |
+| SEN0232        |     1    | Sound level measurement                                     | [Datasheet](https://www.mouser.de/pdfdocs/SEN0232_Web.pdf)                                                 |
+| SCD30          |     1    | CO₂, temperature, and humidity measurement                  | [Datasheet](https://www.mouser.com/datasheet/2/682/Sensirion_CO2_Sensors_SCD30_Datasheet-1901872.pdf)      |
+| OPT3001        |     1    | Ambient light measurement                                   | [Datasheet](https://www.ti.com/lit/ds/symlink/opt3001.pdf?ts=1630915821822)                                |
+| SGP40          |     1    | TVOC measurement                                            | [Datasheet](https://ro.mouser.com/datasheet/2/682/Sensirion_Gas_Sensors_Datasheet_SGP40-2001008.pdf)       |
+| MiCS-5524      |     1    | Analog gas / TVOC measurement                               | [Datasheet](https://cdn-shop.adafruit.com/product-files/3199/MiCS-5524.pdf)                                |
+| SN-GCJA5L      |     1    | Particulate matter ( PM ) measurement                       | [Datasheet](https://www.mouser.com/catalog/specsheets/Panasonic_SN-GCJA5%20Data%20Sheet.pdf)               |
+| BMI270         |     1    | 6-axis inertial measurement                                 | [Datasheet](https://download.mikroe.com/documents/datasheets/bst-bmi270-ds000-2_datasheet.pdf)             |
+| BME280         |     1    | Atmospheric pressure, temperature, and humidity measurement | [Datasheet](https://www.mouser.com/datasheet/2/783/BST-BME280-DS002-1509607.pdf)                           |
+| CP2102N        |     1    | USB-to-UART interface                                       | [Datasheet](https://www.silabs.com/documents/public/data-sheets/cp2102n-datasheet.pdf)                     |
+| PCA9517A       |     1    | I²C level shifting / bus buffering                          | [Datasheet](https://www.farnell.com/datasheets/2578416.pdf)                                                |
+| MCP3221        |     1    | 12-bit external ADC                                         | [Datasheet](https://ro.mouser.com/datasheet/2/268/mchp_s_a0002844534_1-2274805.pdf)                        |
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ ESP32-­WROVER­-IB -->
-## ESP32-­WROVER­-IB
+Auxiliary components:
 
-**FIGURE 1: ESP32-­WROVER­-IB module**
+| Component                            | Quantity | Purpose                   |
+| :----------------------------------- | :------: | :------------------------ |
+| Barrel jack connector + wall adapter |     1    | Power input               |
+| M3×30 mm screws + spacers            |   4 + 4  | PCB mounting              |
+| Male / female headers                | Multiple | PCB interconnection       |
+| Cables                               | Multiple | Internal connections      |
+| Test points                          | Multiple | Debugging and measurement |
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+## Microcontroller
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### ESP32-­WROVER­-IB
+
+**Figure 1: ESP32-WROVER-IB module**
 
 <img src="docs/components/ESP32_module.jpg" width="25%" height="auto">
 
-The microcontroller chosen to be used is the [ ESP32-­WROVER­-IB ]( https://www.espressif.com/sites/default/files/documentation/esp32-wrover-b_datasheet_en.pdf ) module from Espressif.
-The resources available on the Internet, more precisely examples and various libraries, make it a perfect choice for IoT applications.
+The [ ESP32-­WROVER­-IB ]( https://www.espressif.com/sites/default/files/documentation/esp32-wrover-b_datasheet_en.pdf ) module from Espressif was selected as the main microcontroller for the system.
+It provides the processing capabilities, peripheral interfaces, and wireless connectivity required by the application.
 
-
-**FIGURE 2: ESP32 functional blocks**
+**Figure 2: ESP32 functional blocks**
 
 <img src="docs/components/ESP32_functional_block.jpg" width="50%" height="auto">
 
-The module features integrated wireless communication, including Wi-Fi. 
-It also supports typical intraboard serial communication protocols such as SPI, I2C, and UART. 
-The power of the antenna used for data transmission can be adjusted depending on its position in relation to the router, which helps achieve lower energy consumption. 
-Its minimalist design takes up little space, making it easy to integrate into the device.
+The module integrates **2.4 GHz Wi-Fi** and supports common embedded communication interfaces, including **SPI, I²C, and UART**.
+The ESP32 provides configurable Wi-Fi transmit power, allowing the wireless interface to be adapted to the required communication range and power consumption.
+
+Its compact module form factor simplifies integration with the custom PCB while providing the connectivity required for the IoT application.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ ADT7410 -->
-## ADT7410
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+## Temperature and humidity
+<!-- -------------------------------------------------------------------------c----------------------------------------------------------------------------- -->
+### ADT7410
 
-The [ ADT7410 ]( https://ro.mouser.com/datasheet/2/609/ADT7410-1503456.pdf ) is a high accuracy **temperature sensor**, capable of measuring temperatures between −55 °C and +150 °C. 
-Its accuracy ranges from ±0.4°C to ±1.0°C, depending on the measurement range and supply voltage. 
-The resolution of the ADC can be selected between 13 and 16 bits ( sign + 12 or 15 data bits ).
-Alerts such as overtemperature, undertemperature, and critical overtemperature can be configured using the INT and CT pins, with programmable limit settings. 
-The INT pin can operate in either interrupt mode or comparator mode.
+The [ADT7410](https://ro.mouser.com/datasheet/2/609/ADT7410-1503456.pdf) is a high-accuracy **digital temperature sensor** used for ambient temperature monitoring.
 
-The sensor communicates via the I2C protocol, supporting speeds of up to 400 kHz.
-The last two I2C address bits are configurable through the A0 and A1 pins, allowing for four possible address variations. 
-It operates at a supply voltage range of 2.7V to 5.5V.
+Key specifications:
 
+* **Measurement range:** −55 °C to +150 °C
+* **Accuracy:** up to ±0.4 °C, depending on operating conditions
+* **Resolution:** 13-bit or 16-bit
+* **Interface:** I²C, up to 400 kHz
+* **I²C addresses:** 4 configurable addresses using A0 / A1
+* **Supply voltage:** 2.7 V – 5.5 V
+* **Alerts:** programmable overtemperature and undertemperature limits via INT/CT
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ SHT85-->
-## SHT85
-
-The [ SHT85 ]( https://www.mouser.com/datasheet/2/682/Sensirion_Humidity_Sensors_SHT85_Datasheet-1501398.pdf ) is a very high accuracy **humidity and temperature sensor**.
-Its measurement ranges are [ 0, 100 ] %RH for humidity and [ -40, 105 ] °C for temperature, with a typical accuracy of ±1.5% RH ( over the range [ 0, 80 ] %RH ) and ±0.1°C ( for the range [ 20, 50 ] °C ). 
-The package design ensures the best possible thermal coupling to the environment and decoupling from potential heat sources on the main board. 
-It features a PTFE membrane that protects the sensor opening from liquids and dust according to the IP67 standard, without affecting the response time of the RH signal. 
-This makes it suitable for use in harsh environmental conditions.
-Additionally, data and commands are protected with an 8-bit CRC checksum, which increases communication reliability.
-
-The sensor uses the I2C protocol, supporting speeds up to 1 MHz and a single I2C address.
-It operates at voltages ranging from 2.15V to 5.5V, with a typical operating voltage of 3.3V.
+The sensor is connected to the ESP32 through the **I²C bus**, allowing the firmware to periodically acquire temperature measurements alongside data from the other environmental sensors.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ SEN0232 -->
-## SEN0232
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### SHT85
 
-The [ SEN0232 ]( https://www.mouser.de/pdfdocs/SEN0232_Web.pdf ) is a plug and play **sound level meter** board.
-Its measurement range is 30 dBA to 150 dBA, with a measurement error of ±1.5 dB. 
-An important aspect is that the A-weighted decibel ( dBA ) is an expression of the relative loudness of sounds as perceived by the human ear, meaning the sound level is normalized to human hearing. 
-The sensor's output is an analog signal ranging from 0.6V to 2.6V.
+The [SHT85](https://www.mouser.com/datasheet/2/682/Sensirion_Humidity_Sensors_SHT85_Datasheet-1501398.pdf) is a high-accuracy **digital temperature and humidity sensor** used for environmental monitoring.
 
-It can operate on either 3.3V or 5V voltage levels.
+Key specifications:
 
+* **Humidity range:** 0–100 %RH
+* **Temperature range:** −40 °C to +105 °C
+* **Typical humidity accuracy:** ±1.5 %RH ( over [ 0, 80 ] %RH )
+* **Typical temperature accuracy:** ±0.1 °C ( over [ 20, 50 ] °C )
+* **Interface:** I²C, up to 1 MHz
+* **I²C address:** 1 fixed address
+* **Supply voltage:** 2.15 V – 5.5 V
+* **Typical supply voltage:** 3.3 V
+* **Data integrity:** 8-bit CRC
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ OPT3001 -->
-## OPT3001
+The SHT85 is equipped with a **PTFE membrane** that protects the sensing element against dust and liquids while maintaining the humidity sensor's response characteristics.
+Its package is designed to provide good thermal coupling to the surrounding environment while reducing the influence of heat generated by nearby electronics.
 
-The [ OPT3001 ]( https://www.ti.com/lit/ds/symlink/opt3001.pdf?ts=1630915821822 ) is an **ambient light sensor** capable of measuring values between 0.01 lux and 83 klux. 
-The spectral response of the sensor closely matches the photopic response of the human eye and includes significant infrared rejection, typically rejecting over 99% of IR. 
-This strong IR rejection also helps maintain high accuracy when mounting the sensor under dark glass. 
-Additionally, the effects of 50-Hz and 60-Hz noise from typical light bulbs are minimized by integrating the results over either 100 ms or 800 ms. 
-Interrupts can be generated using the INT pin by comparing the measurement results to programmable low and high limit values.
-
-The sensor uses the I2C protocol, with speeds of up to 2.6 MHz. 
-There are four possible I2C addresses, selectable via the ADDR pin by connecting it to GND, VDD, SDA, or SCL. 
-Its operating voltage is 3.3V.
-
-
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ MICS5524 -->
-## MiCS-5524
-
-The [ MiCS-5524 ]( https://cdn-shop.adafruit.com/product-files/3199/MiCS-5524.pdf ) is an **indoor gas detector** for carbon monoxide and natural gas leakages.
-The sensor can detect multiple gases, namely carbon monoxide ( CO ), ethanol ( C2H6OH ), hydrogen ( H2 ), ammonia ( NH3 ) and methane ( CH4 ), at various concentrations. 
-However, it cannot distinguish which specific gas is being detected.
-
-The sensor is essentially composed of a heater and an external resistor. 
-The voltage across the external resistor can then be measured by an ADC. 
-The operating voltage of the sensor is 5V.
+The sensor communicates with the ESP32 over the **I²C bus**.
+CRC-based data validation is used to detect communication errors during measurement transfers.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ SN-GCJA5L -->
-## SN-GCJA5L
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### BME280
 
-The [ SN-GCJA5L ]( https://www.mouser.com/catalog/specsheets/Panasonic_SN-GCJA5%20Data%20Sheet.pdf ) is a laser type **PM sensor**.
-The accuracy of the sensor is ±10% across low to high concentrations. 
-The sensor detects particles using an optical method, with a laser diode as the light-emitting device and a photodiode as the light-receiving device. 
-The laser diode emits light, while the photodiode detects scattered light, which is correlated to the actual floating particles in the air. 
-A microprocessor inside the sensor analyzes the wave profile from the photodiode using a special algorithm, then outputs a converted mass-density.
+The [BME280](https://www.mouser.com/datasheet/2/783/BST-BME280-DS002-1509607.pdf) is a digital **temperature, humidity, and atmospheric pressure sensor**.
 
-It provides two digital interfaces: I2C ( up to 400 kHz ) and UART ( fixed at 9600 baud rate ). 
-The I2C address cannot be changed.
-The operating voltage is 5V, but its digital interface supports only 3.3V.
+Key specifications:
 
+* **Humidity range:** 0–100 %RH
+* **Humidity accuracy:** ±3 %RH
+* **Pressure range:** 300–1100 hPa
+* **Pressure accuracy:** ±1.0–1.7 hPa
+* **Interfaces:** I²C, up to 3.4 MHz; SPI, up to 10 MHz
+* **I²C addresses:** 2 configurable addresses
+* **Supply voltage:** 1.71–3.6 V
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ SGP40 -->
-## SGP40
+The BME280 communicates with the ESP32 through **I²C** and provides atmospheric pressure measurements alongside temperature and humidity data.
 
-The [ SGP40 ]( https://ro.mouser.com/datasheet/2/682/Sensirion_Gas_Sensors_Datasheet_SGP40-2001008.pdf ) is an **indoor air quality sensor** used for VOC measurements.
-It is designed for air purifiers or demand-controlled ventilation systems.
-The sensor features a temperature controlled micro hotplate, providing a humidity compensated VOC based indoor air quality signal. 
-The output signal can be directly processed by a VOC algorithm to translate the raw signal into a VOC Index, which serves as a robust measure of indoor air quality.
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### SCD30
 
-The sensor uses the I2C protocol, supports speeds of up to 400 kHz, and has a single I2C address. 
-The typical operating voltage is 3.3V.
+The [SCD30](https://www.mouser.com/datasheet/2/682/Sensirion_CO2_Sensors_SCD30_Datasheet-1901872.pdf) is a digital **CO₂ sensor** with integrated temperature and humidity measurements.
 
+Key specifications:
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ BMI270 -->
-## BMI270
+* **CO₂ range:** 400–10,000 ppm
+* **CO₂ accuracy:** ±30 ppm + 3% of measured value
+* **Humidity range:** 0–100 %RH
+* **Humidity accuracy:** ±3 %RH
+* **Temperature range:** −40 °C to +70 °C
+* **Interfaces:** I²C, up to 100 kHz; UART
+* **I²C address:** Fixed
+* **Data integrity:** 8-bit CRC
+* **Supply voltage:** 3.3–5.5 V
 
-The [ BMI270 ]( https://download.mikroe.com/documents/datasheets/bst-bmi270-ds000-2_datasheet.pdf ) is a **6-axis IMU sensor**.
-Both the triaxial accelerometer and gyroscope have 16-bit resolution with various programmable ranges. 
-Multiple low-pass filters are available for configuration to reduce noise. 
-There are two I/O pins designated for interrupts and synchronization events.
-
-Two serial interfaces are available: I2C ( up to 400 kHz ) and SPI ( 3 or 4 wires, up to 10 MHz ).
-Its typical working voltage is 1.8 volts.
-
-
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ BME280 -->
-## BME280
-
-The [ BME280 ]( https://www.mouser.com/datasheet/2/783/BST-BME280-DS002-1509607.pdf ) is a **humidity, temperature and pressure sensor**.
-It can measure humidity from 0 to 100% RH with an absolute tolerance of ±3% RH ( over the range [ 20%, 80% ] at 25 °C ) and pressure from 300 to 1100 hPa with an accuracy of ±1.0 to ±1.7 hPa, depending on the temperature interval.
-
-The chip supports both I2C ( up to 3.4 MHz ) and SPI ( 3 or 4 wires, up to 10 MHz ) digital interfaces.
-There are two I2C addresses available for selection. 
-Its typical operating voltage is 1.8V, but it can also function at 3.3V according to the datasheet.
+The SCD30 communicates with the ESP32 through **I²C**. CRC-based data validation is used to detect communication errors during data transfers.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ SCD30 -->
-## SCD30
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+## Air quality
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### SN-GCJA5L
 
-The [ SCD30 ]( https://www.mouser.com/datasheet/2/682/Sensirion_CO2_Sensors_SCD30_Datasheet-1901872.pdf ) is a **CO2 sensor, with integrated humidity and temperature measurements**.
-It can measure CO2 concentrations from 400 to 10,000 ppm with an accuracy of ±30 ppm + 3% of the measured value, humidity from 0% to 100% RH with ±3% RH accuracy ( at 25 °C ), and temperature from -40 °C to 70 °C with an accuracy of ±( 0.4 °C + 0.023 * ( T [°C] – 25 °C ) ) over the range of 0°C to 50°C.
+The [SN-GCJA5L](https://www.mouser.com/catalog/specsheets/Panasonic_SN-GCJA5%20Data%20Sheet.pdf) is a laser-based **particulate matter ( PM ) sensor** used to measure airborne particle concentration.
 
-The chip supports I2C ( up to 100 kHz ) and UART digital interfaces.
-There is a single I2C address available for selection, and the I2C data is protected with an 8-bit CRC checksum to increase communication reliability. 
-Its operating voltage ranges from 3.3 to 5.5 volts.
+The sensor uses an optical measurement principle: a laser diode illuminates particles in the air, while a photodiode detects the resulting scattered light.
+An internal processor analyzes the optical signal and converts it into a particle mass-density measurement.
 
+Key specifications:
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ CP2102N -->
-## CP2102N
+* **Measurement accuracy:** ±10%
+* **Interfaces:** I²C, up to 400 kHz; UART, 9600 baud
+* **I²C address:** Fixed
+* **Supply voltage:** 5 V
+* **Digital interface voltage:** 3.3 V
 
-The [ CP2102N ]( https://www.silabs.com/documents/public/data-sheets/cp2102n-datasheet.pdf ) is a **USB-UART bridge** that can be used to interface a laptop with a microcontroller.
-The number of auxiliary components is kept to a minimum, thus reducing costs and saving space. 
-The chip can be configured using a simple GUI-based configurator. 
-Multiple pins ( such as RST ( Request To Send ) and DTR ( Data Terminal Ready ) ) are available for flow control.
-CP2102N devices enable quick USB connectivity with minimal development effort.
+The sensor communicates with the ESP32 using **I²C**, while its 5 V supply and 3.3 V digital interface levels are handled separately in the hardware design.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ PCA9517A -->
-## PCA9517A
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### SGP40
 
-The [ PCA9517A ]( https://www.farnell.com/datasheets/2578416.pdf ) is an **I2C bus repeater** that provides level shifting between low voltage ( 0.9 to 5.5 V ) and higher voltage ( 2.7 to 5.5 V ) for I2C−bus or SMBus applications.
-It retains all the operating modes and features of the I2C bus system during level shifts and permits the extension of the I2C bus by providing bidirectional buffering for both the SDA and SCL lines.
-The bidirectional buffer isolates the capacitances on both sides, thus enabling two buses with up to 400 pF capacitance each. 
-It supports a frequency of up to 1 MHz. 
-The supply voltages for the two ports are 0.9 to 5.5 V and 2.7 to 5.5 V.
+The [SGP40](https://ro.mouser.com/datasheet/2/682/Sensirion_Gas_Sensors_Datasheet_SGP40-2001008.pdf) is a digital **volatile organic compound ( VOC ) sensor** used for indoor air quality monitoring.
+
+The sensor uses a temperature-controlled micro hotplate to provide a humidity-compensated VOC measurement.
+Its raw output can be processed using a VOC algorithm to obtain a **VOC Index**, providing a normalized indication of indoor air quality.
+
+Key specifications:
+
+* **Measurement:** VOC
+* **Output:** Raw VOC signal / VOC Index
+* **Interface:** I²C, up to 400 kHz
+* **I²C address:** Fixed
+* **Typical supply voltage:** 3.3 V
+
+The sensor communicates with the ESP32 through the **I²C bus**.
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### MiCS-5524
+
+The [MiCS-5524](https://cdn-shop.adafruit.com/product-files/3199/MiCS-5524.pdf) is an **analog gas sensor** used for detecting the presence of gases such as carbon monoxide (CO), ethanol (C₂H₆OH), hydrogen (H₂), ammonia (NH₃), and methane (CH₄).
+
+The sensor does not provide gas-specific identification; its output varies according to the concentration of the detected gases.
+
+Key specifications:
+
+* **Detected gases:** CO, ethanol, H₂, NH₃, CH₄
+* **Output:** Analog
+* **Supply voltage:** 5 V
+
+The sensor consists of a heated sensing element whose resistance changes in the presence of target gases.
+The resulting voltage across the external load resistor is measured using an **ADC** connected to the ESP32.
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+## Sound
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### SEN0232
+
+The [SEN0232](https://www.mouser.de/pdfdocs/SEN0232_Web.pdf) is an analog **sound level sensor** used to monitor ambient noise.
+
+Key specifications:
+
+* **Measurement range:** 30–130 dBA
+* **Accuracy:** ±1.5 dB
+* **Output:** Analog, 0.6 V – 2.6 V
+* **Supply voltage:** 3.3 V or 5 V
+
+The sensor provides an **A-weighted sound pressure level ( dBA )**, which approximates the frequency sensitivity of human hearing.
+
+The analog output is connected to the ESP32's **ADC**, where the firmware samples and processes the signal to obtain the sound level measurement.
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+## Light and motion
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### OPT3001
+
+The [OPT3001](https://www.ti.com/lit/ds/symlink/opt3001.pdf?ts=1630915821822) is a digital **ambient light sensor** used to measure illuminance.
+
+Key specifications:
+
+* **Measurement range:** 0.01 lux – 83 klux
+* **Spectral response:** Designed to closely match the human eye's photopic response
+* **IR rejection:** >99% typical
+* **Interface:** I²C, up to 2.6 MHz
+* **I²C addresses:** 4 configurable addresses
+* **Supply voltage:** 3.3 V
+
+The sensor's spectral response is designed to approximate human visual perception while providing strong infrared rejection, improving the accuracy of ambient light measurements under different lighting conditions.
+
+The OPT3001 communicates with the ESP32 through the **I²C bus**. Its configurable address allows it to coexist with other I²C devices in the system.
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### BMI270
+
+The [BMI270](https://download.mikroe.com/documents/datasheets/bst-bmi270-ds000-2_datasheet.pdf) is a **6-axis inertial measurement unit ( IMU )** integrating a 3-axis accelerometer and 3-axis gyroscope.
+
+Both sensors provide 16-bit measurements with configurable measurement ranges and filtering options for reducing measurement noise.
+The device also provides two configurable interrupt pins for motion detection and other sensor events.
+
+Key specifications:
+
+* **Sensors:** 3-axis accelerometer + 3-axis gyroscope
+* **Resolution:** 16-bit
+* **Interfaces:** I²C, up to 400 kHz; SPI, up to 10 MHz
+* **Interrupts:** 2 configurable interrupt pins
+* **Typical supply voltage:** 1.8 V
+
+The BMI270 communicates with the ESP32 through **I²C**, providing acceleration and angular velocity measurements for motion monitoring.
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+## Interface and support
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### CP2102N
+
+The [CP2102N](https://www.silabs.com/documents/public/data-sheets/cp2102n-datasheet.pdf) is a **USB-to-UART bridge** used to provide communication between the ESP32 and a PC.
+
+Key specifications:
+
+* **Interface:** USB 2.0 Full-Speed
+* **Serial interface:** UART
+* **USB connector:** USB device interface
+* **Configuration:** Configurable using Silicon Labs' configuration tools
+
+The CP2102N converts USB communication from the PC into **UART communication** used by the ESP32, providing a convenient interface for device configuration, debugging, and data exchange.
+
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### PCA9517A
+
+The [PCA9517A](https://www.farnell.com/datasheets/2578416.pdf) is a bidirectional **I²C bus repeater and level shifter** used to interface I²C devices operating at different voltage levels.
+
+Key specifications:
+
+* **Function:** I²C level shifting and bus buffering
+* **Low-voltage side:** 0.9–5.5 V
+* **High-voltage side:** 2.7–5.5 V
+* **Maximum bus frequency:** 1 MHz
+* **Supported signals:** SDA and SCL
+
+The PCA9517A provides bidirectional buffering of the **SDA and SCL** lines, allowing I²C devices with different logic-voltage levels to communicate reliably while isolating the bus capacitance between the two sides.
 
 
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ MCP3221 -->
-## MCP3221
+### MCP3221
 
-The [ MCP3221 ]( https://ro.mouser.com/datasheet/2/268/mchp_s_a0002844534_1-2274805.pdf ) is an **SAR ADC with a 12-bit resolution**, featuring one single-ended input and very low power consumption. 
-An on-chip conversion clock enables independent timing for the I2C and conversion clocks.
+The [MCP3221](https://ro.mouser.com/datasheet/2/268/mchp_s_a0002844534_1-2274805.pdf) is a **12-bit single-ended SAR ADC** used to digitize analog signals that cannot be measured directly using the available ESP32 interfaces.
 
-The sensor uses the I2C protocol and supports speeds up to 400 kHz. 
-The device has a single I2C address set at the factory, but there are 8 chip versions available ( A0 to A7 ), each with its unique address.
-The version is specified after the chip's name ( MCP3221XX ).
-The MCP3221 operates on a single-supply voltage with a broad range of 2.7V to 5.5V.
+Key specifications:
 
+* **Resolution:** 12-bit
+* **Inputs:** 1 single-ended analog input
+* **Interface:** I²C, up to 400 kHz
+* **I²C addresses:** 8 address variants available
+* **Supply voltage:** 2.7–5.5 V
+* **Power consumption:** Low-power operation
+
+The MCP3221 communicates with the ESP32 through the **I²C bus**, allowing analog sensor signals to be converted into digital measurements for processing by the firmware.
 
 
 
@@ -341,7 +433,7 @@ The MCP3221 operates on a single-supply voltage with a broad range of 2.7V to 5.
 
 In this section, the hardware implementation of the device will be detailed.
 
-For each board, the block diagrams will be presented first, where the connections between the components can be seen. 
+For each board, the block diagrams will be presented first, where the connections between the components can be seen.
 The following colors are used to represent the functionality:
 
 - ${\textsf{\color{red}red}}$ and ${\textsf{\color{blue}blue}}$ - DC power supply
@@ -350,368 +442,334 @@ The following colors are used to represent the functionality:
 
 The layout and assembled boards will be presented at the end.
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Device architecture -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ## Device architecture
 
-As mentioned previously, the functionality of the device is divided into two PCBs, as follows:
+The device is divided into two PCBs based on sensor placement and functionality:
 
-- **Board P1 ( Main board )**: supplies the voltage levels needed by the components; the ESP32 and the sensors that don't require direct contact with the air ( light, accel + gyro ) are placed on this board; the PM particle and sound sensors connect to this board using cables
-- **Board P2 ( Sensor board )**: the sensors that require direct contact with the air ( temperature, humidity, CO2, TVOC, air pressure ) are placed on this board
+* **Board P1 ( Main board )** — contains the ESP32, power supply, interface circuitry, ambient light sensor, and IMU. The PM and sound sensors are connected through external cables.
+* **Board P2 ( Sensor board )** — contains the sensors requiring direct exposure to the environment: temperature, humidity, CO₂, TVOC, and atmospheric pressure.
 
-The architecture of the entire system can be seen in the figure below. 
-
-**FIGURE 3: Device architecture**
+**Figure 3: Device architecture**
 
 <img src="docs/hardware_implementation/device_architecture/device_architecture.png" width="55%" height="auto">
 
-The device is powered using a wall adapter. 
-Two MCP3221 I2C external ADC were placed as close as possible to the output of the the two analog sensors ( sound and gas ) to minimize interferences.
-This means that all sensors support I2c communication.
+The system is powered by an external wall adapter. The two analog sensors ( sound and gas ) are interfaced through dedicated **MCP3221 I²C ADCs**, placed close to their outputs to minimize analog signal interference. This allows their measurements to be transferred to the ESP32 through the same digital communication architecture as the other sensors.
 
-The sensors require different voltage levels for logic ( 1.8V, 3.3V, and 5V ), while the ESP32 operates at 3.3V. 
-Therefore, two PCA9517A level shifters were used to interface all the components.
+The sensors operate with different logic levels ( 1.8 V, 3.3 V, and 5 V ), while the ESP32 operates at 3.3 V. Two **PCA9517A I²C level shifters** are therefore used to interface the different voltage domains.
 
 
-
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Main board -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ## Main board
 
-**FIGURE 4: main board functional block - power supply**
+**Figure 4: Main board functional block — power supply**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_power_supply.png" width="30%" height="auto">
 
-Multiple voltage levels ( 5V, 3V3 and 1V8 ) are needed for the device to function properly ( **Figure 4** ). 
-To achieve this, three LDOs were used in a daisy chain configuration to minimize power dissipation in the second and third regulators. 
-The downside of using a single LDO to step down from the input voltage ( Vin ) to 5V is the significant power dissipation, which generates heat.
+The device requires three voltage rails: **5 V, 3.3 V, and 1.8 V**.
+Three LDOs are connected in a daisy-chain configuration to distribute the voltage drop and reduce power dissipation in the downstream regulators.
 
+The main drawback is the power dissipated by the first LDO when converting the input voltage directly to 5 V, resulting in significant heat generation.
 
-**FIGURE 5: main board functional block - programmer**
+**Figure 5: Main board functional block — programmer**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_programmer.png" width="40%" height="auto">
 
-The laptop connects to the CP2102N using the micro USB connector. 
-The ESP32 has a built-in bootloader, allowing the microcontroller to be programmed via UART without needing an external programmer.
+The ESP32 is programmed through **UART** using the CP2102N USB-UART bridge and a micro-USB connector.
+The ESP32's integrated bootloader eliminates the need for a dedicated external programmer.
 
-
-**FIGURE 6: main board functional block - microcontroller**
+**Figure 6: Main board functional block — microcontroller**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_microcontroller.png" width="30%" height="auto">
 
-All the sensors support I2C ( the 2 analog ones have provided an I2C external ADC each ).
-The challenge with I2C is that it operates on a single bus, where all sensors are connected. 
-If one sensor malfunctions, it might pull the SDA line low, potentially halting the entire bus indefinitely. 
-To prevent this, since the ESP32 provides two I2C serial modules, the sensors were split into two groups, each having its own bus.
-If anything happens to one bus, the rest of the sensors will keep working until the problem is fixed.
+The sensors are distributed across the ESP32's **two independent I²C buses**.
+The two analog sensors are interfaced through dedicated MCP3221 ADCs, providing an I²C interface to the ESP32.
 
+Using separate buses improves system robustness. A malfunctioning sensor can hold the SDA line low and block its I²C bus; separating the sensors across two buses prevents a fault on one bus from affecting the remaining sensors.
 
-**FIGURE 7: main board functional block - level shifter**
+**Figure 7: Main board functional block — level shifter**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_level_shifter.png" width="35%" height="auto">
 
-Two PCA9517A level shifters were used to accommodate the I2C logic level differences between the ESP32 and the 5V and 1.8V sensors.
+Two **PCA9517A I²C level shifters** are used to interface the ESP32's 3.3 V logic with sensors operating at **5 V and 1.8 V**.
 
-**FIGURE 8: main board functional block - sensors**
+**Figure 8: Main board functional block — sensors**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_sensors.png" width="30%" height="auto">
 
-The ambient light sensor ( OPT3001 ) and the 6-axis IMU sensor ( BMI270 ) are placed on this board directly, while the PM sensor ( SN-GCJA5L ) and the sound sensor ( SEN0232 ) connect to the main board via multiple cables.
+The **OPT3001 ambient light sensor** and **BMI270 6-axis IMU** are mounted directly on the main board.
+The **SN-GCJA5L particulate matter sensor** and **SEN0232 sound sensor** are connected through external cables.
 
-
-**FIGURE 9: main board functional block - sound to I2C**
+**Figure 9: Main board functional block — sound to I²C**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_sound_to_I2C.png" width="40%" height="auto">
 
-The analog voltage provided by the SEN0232 is measured by an MCP3221, and the result is read by the ESP32 via I2C.
+The analog output of the **SEN0232** is digitized locally by an **MCP3221 12-bit ADC**.
+The resulting measurement is then transferred to the ESP32 through the I²C bus.
 
 
-
-
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Layout -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ### Layout
-**FIGURE 10: main board layout**
+
+**Figure 10: Main board layout**
 
 <img src="docs/hardware_implementation/main_board/layout/main_board_layout.png" width="65%" height="auto">
 
-The layout of the main board is shown in **Figure 10**.
-The ESP's antenna is positioned outside the board, on the right side.
-The MCP3221 for the sound sensor is placed as close as possible to the input connector. 
-The board's power distribution follows a star configuration. 
-The TVS diodes are placed between the micro USB connector and the CP2102N bridge.
+The ESP32 antenna is positioned outside the PCB to provide adequate clearance for wireless communication.
+The MCP3221 used for the sound sensor is placed close to the input connector to minimize the length of the analog signal path.
 
+The power distribution uses a **star topology**, while TVS protection devices are placed directly between the micro-USB connector and the CP2102N to improve ESD protection.
 
-**FIGURE 11: main board top and bot view**
+**Figure 11: Main board top and bottom views**
 
 <img src="docs/hardware_implementation/main_board/layout/main_board_3D_model_top.png" width="60%" height="auto">
 
 <img src="docs/hardware_implementation/main_board/layout/main_board_3D_model_bot.png" width="60%" height="auto">
 
-The board was shaped to accommodate the sound sensor so that they could be stacked. 
-The overall profile of the boards was minimized. 
-All components, except for the ESP32 and light sensor, are placed on the bottom side of the board.
+The PCB outline was designed to allow the sound sensor to be mounted directly above the main board, minimizing the overall device footprint.
+
+All components except the **ESP32 and OPT3001** are mounted on the bottom side of the PCB.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Sensor board -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ## Sensor board
 
-
-**FIGURE 12: Sensor board functional block - sensors**
+**Figure 12: Sensor board functional block — sensors**
 
 <img src="docs/hardware_implementation/sensor_board/functional_blocks/sensor_board_functional_block_sensors.png" width="50%" height="auto">
 
-The sensors that require direct contact with the air ( temperature, humidity, CO2, air pressure, and TVOC ) are placed on this PCB.
+The sensors requiring direct exposure to the environment are mounted on the sensor board: **ADT7410, SHT85, BME280, SCD30, and SGP40**.
 
-**FIGURE 13: Sensor board functional block - sound to I2C**
+**Figure 13: Sensor board functional block — gas to I²C**
 
 <img src="docs/hardware_implementation/sensor_board/functional_blocks/sensor_board_functional_block_TVOC_to_I2C.png" width="40%" height="auto">
 
-Similar to the sound sensor, the analog voltage provided by the MiCS-5524 is measured by an MCP3221, and the result is read by the ESP32 via I2C.
+The analog output of the **MiCS-5524** is digitized locally using an **MCP3221 12-bit ADC**.
+The resulting measurement is transferred to the ESP32 through the I²C bus.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Layout -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ### Layout
 
-**FIGURE 14: Sensor board layout**
+**Figure 14: Sensor board layout**
 
 <img src="docs/hardware_implementation/sensor_board/layout/sensor_board_layout.png" width="60%" height="auto">
 
-The layout of the sensor board is shown in **Figure 14**.
-The sensors were placed to minimize the width of the board.
+The sensor placement was optimized to **minimize the PCB width** while maintaining direct exposure of the sensing elements to the surrounding air.
 
-
-**FIGURE 15: Sensor board top and bot view**
+**Figure 15: Sensor board top and bottom views**
 
 <img src="docs/hardware_implementation/sensor_board/layout/sensor_board_3D_model_top.png" width="40%" height="auto">
 
 <img src="docs/hardware_implementation/sensor_board/layout/sensor_board_3D_model_bot.png" width="40%" height="auto">
 
-The sensor board is shown in **Figure 15**.
-The board can be fixed in place using two screws.
+The sensor board is mechanically secured using **two mounting screws** and interfaces with the main board through the board-to-board headers.
 
 
-
-
-
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Final device -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ## Final device
 
-**FIGURE 16: Final device**
+**Figure 16: Final device**
 
 <img src="docs/hardware_implementation/final_device/final_device.jpeg" width="60%" height="auto">
 
-The final device is shown in **Figure 16**.
-The sensor board is mounted on the main board using the two headers.
-The PM and sound boards are connected to the main board using multiple cables.
-The assembly is held in place by 4 screws, 4 nuts, and 4 spacers.
+The assembled device is shown in **Figure 16**.
+The sensor board is connected to the main board through two board-to-board headers, while the particulate matter and sound sensors are connected through external cables.
 
-The device could be integrated into a housing with two compartments: one for the sound board and main board, and one for the PM and sensor board.
-While the sound module is large and cannot be placed outside, the microphone could be carefully desoldered and attached to the first compartment.
+The assembly is secured using **four screws, four nuts, and four spacers**.
+The board arrangement was designed to support integration into a future enclosure while maintaining access to the sensors requiring direct exposure to the environment.
 
 
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 💻 Software implementation
 
+The firmware and software were designed with **scalability and modularity** in mind, allowing new sensors to be integrated with minimal changes to the existing codebase.
+The software architecture also supports multiple monitoring devices communicating with the same backend.
 
-
-
-
-
-<!-- ______________________________________________________________________________________________________________________________________________________ SOFTWARE IMPLEMENTATION -->
-# Software implementation
-
-In this section, the software implementation of the device will be detailed.
-
-The software architecture of the system was designed to be highly scalable, allowing the microcontroller to easily integrate new sensors and enabling the website to support multiple devices.
-
-
-
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Microcontroller -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ## Microcontroller
 
-The microcontroller's code was developed using OOP concepts such as encapsulation, inheritance, and polymorphism, as the solution needs to be highly scalable. 
-However, there are some downsides, including increased overhead and RAM usage due to features like VTABLEs and VPOINTERs for dynamic dispatch. 
-Nevertheless, the ESP32 has more than enough resources to handle these drawbacks.
+The ESP32 firmware uses a **modular, object-oriented architecture** designed to simplify sensor integration and testing.
+Common functionality is abstracted into base classes, while individual sensor implementations provide device-specific behavior.
 
+The main classes are:
 
-The following classes were created to meet the requirements and encapsulate the functionalities:
-+ I2C DRIVER class
-+ SENSOR class
-+ a dedicated class for each sensor used
-+ MCP3221xxT class ( the ADC on I2C used by the analog sensors )
+* **I2C_DRIVER** — handles I²C communication and bus-level error handling
+* **SENSOR** — defines the common interface for all sensors
+* **Sensor-specific classes** — implement device-specific initialization and measurement handling
+* **MCP3221xxT** — provides the I²C interface to the MCP3221 ADCs used by the analog sensors
 
-
-**FIGURE 17: I2C driver**
+**Figure 17: I²C driver**
 
 <img src="docs/software_implementation/microcontroller/I2C_DRIVER_class_structure.png" width="50%" height="auto">
 
-The I2C_DRIVER class handles I2C communication. 
-Its members are public, allowing them to be accessed from anywhere in the program.
-Two buffers are used for read and write operations. 
-The "end_of_transmission_type" parameter specifies whether a restart condition must be issued or not after a write operation. 
-A timeout mechanism was implemented to prevent the sensors from halting the communication.
-The functions send_read_I2C_bus() and read_I2C_bus() return true if the operation was completed successfully, and false otherwise.
+The **I2C_DRIVER** class provides a common interface for I²C communication.
+Separate read and write buffers are used for data transfers, while the `end_of_transmission_type` parameter controls whether a repeated-start condition is generated after a write operation.
+
+A **timeout mechanism** prevents an unresponsive sensor from blocking the I²C bus indefinitely.
+The `send_read_I2C_bus()` and `read_I2C_bus()` functions return a status indicating whether the operation completed successfully.
 
 
-**FIGURE 18: Sensor class**
+**Figure 18: Sensor class**
 
 <img src="docs/software_implementation/microcontroller/SENSOR_class_structure.png" width="50%" height="auto">
 
-The SENSOR class defines the format that all sensors must adhere to. 
-The protected members are accessible only from derived classes. 
-The pure virtual functions have no implementation in this class, but they must be implemented in the derived classes. 
-Essentially, this structure defines the sensor interface. 
-The virtual keyword indicates that the functions are bound at runtime using dynamic dispatch, allowing for different implementations based on the specific sensor’s technical documentation.
+The **SENSOR** class defines the common interface shared by all sensor implementations.
+Sensor-specific classes inherit from this interface and implement the required operations through pure virtual functions.
 
+This abstraction allows the application to interact with different sensors through a **common interface**, while each implementation handles the communication and measurement details specific to its device.
 
-**FIGURE 19: Sensor inheritance structure**
+**Figure 19: Sensor inheritance structure**
 
 <img src="docs/software_implementation/microcontroller/Sensor_inheritance_structure.png" width="40%" height="auto">
 
-The sensor class structure is shown in **Figure 19**
-The digital sensor classes inherit from the SENSOR class, while the analog sensor classes inherit from both the SENSOR and MCP3221xxT classes. 
-The MCP3221xxT class provides I2C functionality to the analog sensors.
+The sensor class hierarchy is shown in **Figure 19**.
+
+Digital sensors inherit directly from the **SENSOR** base class, while analog sensors inherit from both **SENSOR** and **MCP3221xxT**.
+The latter provides the I²C ADC functionality required to interface the analog sensors with the ESP32.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Dashboard -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ## Dashboard
 
-First, a brief summary of the technology used will be presented, followed by a discussion on the website's implementation.
+The dashboard provides a web-based interface for **visualizing and analyzing sensor data**.
+The technology stack and implementation are described in the following sections.
 
-
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Node-RED -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ### Node-RED
 
-**FIGURE 20: Node-RED**
+**Figure 20: Node-RED**
 
 <img src="docs/software_implementation/dashboard/node_red/Node_RED.png" width="15%" height="auto">
 
-Node-RED was chosen to implement the website, primarily because it is easier to use compared to other alternatives on the market, and new devices can be integrated easily. 
-This API was developed by IBM specifically for IoT applications as a flow-based, low-code development tool for visual programming.
+**Node-RED** was used to implement the web-based dashboard and data-processing layer.
+Its flow-based architecture allows device communication, data processing, storage, and visualization to be connected as modular processing flows.
 
-The website's functionality is achieved by connecting multiple nodes to each other. 
-Information travels in the form of packets between these nodes. 
-The programming language used for implementation is JavaScript. 
-Most common needs are addressed by a wide range of standard nodes available, making the development process smooth and fast.
+The dashboard uses standard Node-RED nodes for common functionality, while **JavaScript** is used for custom data processing and application logic.
+
+The modular architecture simplifies the integration of **additional devices, sensor parameters, and processing functionality** without requiring major changes to the existing system.
 
 
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ asdasdsadsa -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ### MQTT
 
-**FIGURE 21: MQTT**
+**Figure 21: MQTT**
 
 <img src="docs/software_implementation/dashboard/mqtt/MQTT.png" width="30%" height="auto">
 
-The communication between the ESP32 and the website is accomplished using the MQTT network protocol. 
-It operates over the TCP/IP stack, which prevents packet loss by automatically retransmitting dropped packets. 
-This ensures that there are no gaps in the data sets.
+Communication between the ESP32 and the dashboard is implemented using **MQTT** over TCP/IP.
+MQTT provides a lightweight publish-subscribe communication model suitable for IoT applications.
 
-
-**FIGURE 22: MQTT topology**
+**Figure 22: MQTT topology**
 
 <img src="docs/software_implementation/dashboard/mqtt/MQTT_topology.png" width="60%" height="auto">
 
-The protocol is implemented using a star topology, meaning the system will continue to operate as long as the central node remains functional.
+The system uses a **broker-based architecture** consisting of MQTT clients and a central broker:
 
-The entities can be classified into two categories, as follows:
-+ **MQTT client**: a device that connects to the network; there can be multiple clients on a single network
-+ **MQTT broker**: manages all messages from clients and directs them to their destination; there is only one broker per network
+* **MQTT client** — publishes and/or subscribes to messages. The ESP32 and dashboard backend act as clients.
+* **MQTT broker** — receives published messages and distributes them to clients subscribed to the corresponding topics.
 
-Messages are sent and received using a publish-subscribe strategy, which involves a client sending data to a broker. 
-The advantage of this strategy is that the device doesn't need to account for how many clients will receive the data, as the broker manages the distribution.
+The ESP32 publishes sensor measurements to dedicated MQTT topics, while the dashboard backend subscribes to these topics for data processing, storage, and visualization.
 
-
-<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ Website -->
-### Website
-
-The MQTT server is hosted on a Raspberry Pi.
-The acquired data is saved in a .CSV file.
-The user can extract the data stored in the database by either selecting a certain time interval or downloading the entire file.
+The publish-subscribe model **decouples the data producer from its consumers**, allowing additional clients to consume the sensor data without requiring changes to the ESP32 firmware.
 
 
-**FIGURE 23: Dashboard final interface**
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+### Final dashboard
+
+The MQTT broker and Node-RED application are hosted on a **Raspberry Pi**.
+Acquired sensor data is stored in a **CSV file**, providing persistent local storage for subsequent analysis and extraction.
+
+Users can extract measurements either by selecting a specific time interval or by downloading the complete dataset.
+
+**Figure 23: Dashboard final interface**
 
 <img src="docs/software_implementation/dashboard/website/dashboard_final_interface.png" width="190%" height="auto">
 
-The final website is shown in **Figure 23**.
-The items are organized into four columns: three for the sensor readings graphs and one for downloading data. 
-The sensor data is grouped by type.
+The final dashboard is shown in **Figure 23**.
+The interface is organized into four columns: three for displaying sensor measurements and one for data extraction.
+
+Sensor measurements are grouped by parameter type, allowing users to monitor the acquired data in real time and select specific datasets for further processing.
 
 
-<!-- ______________________________________________________________________________________________________________________________________________________ DEMO -->
-# :fire: Demo
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 🔥 Demo
 
-A video was created to showcase the functionality of the device.
+A demonstration video showcasing the device's measurement, monitoring, and data-extraction functionality is available below.
 
-> [!CAUTION]
-> The video is uploaded on Google  Drive, and the rendering quality in browser is very low, so for optimal performance, it should be downloaded before viewing. 
-> I'm sorry for the watermark.
+* **Temperature, CO₂, ambient light, and sound measurement, followed by data extraction:** [Demo video](https://drive.google.com/file/d/1O22NpwT8j0dOTAGnGvBCRcS-pP-F0plG/view?usp=sharing)
 
-The video link is listed below:
-+ testing temperature, CO2, light, and sound, followed by downloading the data ( [ link ]( https://drive.google.com/file/d/1O22NpwT8j0dOTAGnGvBCRcS-pP-F0plG/view?usp=sharing ) )
+> [!NOTE]
+> The video is hosted on Google Drive. Browser playback may have reduced quality; downloading the video is recommended for the best viewing experience.
 
-There is an offset between the temperature readings due to the heat generated by the 5V LDO and the sensor's placement on the second board.
+A temperature offset can be observed between the sensors due to heat generated by the **5 V LDO** and the sensor's placement on the sensor board.
 
 
-<!-- ______________________________________________________________________________________________________________________________________________________ RESULTS -->
-# :partying_face: Results
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 🥳 Results and limitations
 
-The problem with monitoring these air quality parameters is that there wasn't a clear reference available to compare the measurements against. 
-The tolerances presented in the sensor datasheets are provided for some specific conditions.
-After integrating the sensors onto the PCBs, their values might change. 
-To validate the configuration, the device's readings should be compared to those of multiple calibrated pieces of equipment.
+The project successfully demonstrated the integration of multiple environmental sensors into a custom hardware and software platform, with measurements acquired by the ESP32, transmitted over MQTT, stored, visualized, and exported through the dashboard.
 
+Several limitations were identified during development:
 
-The device generates a significant amount of heat due to the 5V LDO ( **Figure 4** ) because of its power dissipation. 
-However, this issue could easily be resolved by placing a buck converter before the LDO to lower the voltage to a more acceptable level, such as 6V. 
-The same steps could be followed for the 3V3 and 1V8 voltage levels.
+* **Measurement validation:** Sensor datasheet specifications apply under defined test conditions and do not guarantee the same accuracy after integration into the complete system. Proper validation would require comparison against **calibrated reference instruments** under controlled conditions.
+* **Power dissipation:** The 5 V LDO generates significant heat due to the voltage drop from the input supply. A **buck converter placed before the LDOs** could reduce the voltage drop and power dissipation. The same approach could be applied to the 3.3 V and 1.8 V supply rails.
+* **Dashboard performance:** Short sampling intervals result in frequent graph updates, increasing the dashboard's processing and rendering load. Performance could be improved through more efficient data handling, reduced update frequency, or a more optimized visualization solution.
 
-
-The website responds slowly when the sampling period is short, as many graphs need to be refreshed frequently. 
-This could be addressed by exploring other similar tools available on the market
+These limitations provide clear directions for further development and optimization of the system.
 
 
-<!-- ______________________________________________________________________________________________________________________________________________________ CONCLUSION -->
-# :checkered_flag: Conclusions
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 🏁 Conclusions
 
-In conclusion, the project's aim to design a combined hardware and software solution for implementing a customized device capable of acquiring, monitoring, and displaying multiple air quality parameters was successfully accomplished. The system provides real-time data to users, enabling them to assess air quality and make informed decisions.
+The project successfully delivered a **custom embedded hardware and software platform for multi-parameter air quality monitoring**.
 
-While there are still many improvements to be made, the designed architecture facilitates easy integration of these enhancements.
+The system integrates multiple sensors, custom PCBs, ESP32 firmware, MQTT communication, data storage, and a web-based dashboard for **real-time visualization and historical data analysis**.
 
-
-<!-- ______________________________________________________________________________________________________________________________________________________ RESOURCES -->
-# :mag_right: Resources
-
-+ ESP32-­WROVER­-B datasheet, Espressif Systems, [ link ]( https://www.espressif.com/sites/default/files/documentation/esp32-wrover-b_datasheet_en.pdf )
-+ ADT7410 datasheet, Analog Devices, [ link ]( https://ro.mouser.com/datasheet/2/609/ADT7410-1503456.pdf )
-+ SHT85 datasheet, Sensirion, [ link ]( https://www.mouser.com/datasheet/2/682/Sensirion_Humidity_Sensors_SHT85_Datasheet-1501398.pdf )
-+ SEN0232 datasheet, Dfrobot, [ link ]( https://www.mouser.de/pdfdocs/SEN0232_Web.pdf )
-+ SCD30 datasheet, Sensirion, [ link ]( https://www.mouser.com/datasheet/2/682/Sensirion_CO2_Sensors_SCD30_Datasheet-1901872.pdf )
-+ OPT3001 datasheet, Texas Instruments, [ link ]( https://www.ti.com/lit/ds/symlink/opt3001.pdf?ts=1630915821822 )
-+ SGP40 datasheet, Sensirion, [ link ]( https://ro.mouser.com/datasheet/2/682/Sensirion_Gas_Sensors_Datasheet_SGP40-2001008.pdf )
-+ MiCS-5524 datasheet, SGX Sensortech, [ link ]( https://cdn-shop.adafruit.com/product-files/3199/MiCS-5524.pdf )
-+ SN-GCJA5 datasheet, Panasonic, [ link ]( https://www.mouser.com/catalog/specsheets/Panasonic_SN-GCJA5%20Data%20Sheet.pdf )
-+ BMI270 datasheet, Bosch, [ link ]( https://download.mikroe.com/documents/datasheets/bst-bmi270-ds000-2_datasheet.pdf )
-+ BME280 datasheet, Bosch, [ link ]( https://www.mouser.com/datasheet/2/783/BST-BME280-DS002-1509607.pdf )
-+ CP2102N datasheet, Silicon Labs, [ link ]( https://www.silabs.com/documents/public/data-sheets/cp2102n-datasheet.pdf )
-+ PCA9517A datasheet, ON Semiconductor, [ link ]( https://www.farnell.com/datasheets/2578416.pdf )
-+ MCP3221 datasheet, Microchip, [ link ]( https://ro.mouser.com/datasheet/2/268/mchp_s_a0002844534_1-2274805.pdf )
-+ node-red-dashboard, Node-RED, [ link ]( https://flows.nodered.org/node/node-red-dashboard )
+The modular hardware and software architecture allows additional sensors, devices, and processing features to be integrated with minimal changes, providing a solid foundation for future development and system expansion.
 
 
-<!-- ______________________________________________________________________________________________________________________________________________________ GLOSSARY -->
-# :question: Glossary
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 🔎 Resources
 
-+ ADC - Analog to Digital Converter
-+ GUI - Graphical User Interface
-+ I2C - Inter-Integrated Circuit
-+ IMU - Inertial Measurement Unit
-+ LDO - Low DropOut
-+ MQTT - Message Queuing Telemetry Transport
-+ OOP - Object-Oriented Programming
-+ PCB - Printed Circuit Board
-+ PM - Particulate Matter
-+ PTFE - PolyTetraFluoroEthylene
-+ SAR - Successive Approximation Register
-+ SMBus - System Management Bus
-+ SPI - Serial Peripheral Interface
-+ TVOC - Total Volatile Organic Compound
-+ UART - Universal Asynchronous Receiver / Transmitter
-+ USB - Universal Serial Bus
-+ VOC - Volatile Organic Compounds
+Hardware resources:
+
+* [ESP32-WROVER-B datasheet](https://www.espressif.com/sites/default/files/documentation/esp32-wrover-b_datasheet_en.pdf) — Espressif Systems
+* [ADT7410 datasheet](https://ro.mouser.com/datasheet/2/609/ADT7410-1503456.pdf) — Analog Devices
+* [SHT85 datasheet](https://www.mouser.com/datasheet/2/682/Sensirion_Humidity_Sensors_SHT85_Datasheet-1501398.pdf) — Sensirion
+* [SEN0232 datasheet](https://www.mouser.de/pdfdocs/SEN0232_Web.pdf) — DFRobot
+* [SCD30 datasheet](https://www.mouser.com/datasheet/2/682/Sensirion_CO2_Sensors_SCD30_Datasheet-1901872.pdf) — Sensirion
+* [OPT3001 datasheet](https://www.ti.com/lit/ds/symlink/opt3001.pdf?ts=1630915821822) — Texas Instruments
+* [SGP40 datasheet](https://ro.mouser.com/datasheet/2/682/Sensirion_Gas_Sensors_Datasheet_SGP40-2001008.pdf) — Sensirion
+* [MiCS-5524 datasheet](https://cdn-shop.adafruit.com/product-files/3199/MiCS-5524.pdf) — SGX Sensortech
+* [SN-GCJA5L datasheet](https://www.mouser.com/catalog/specsheets/Panasonic_SN-GCJA5%20Data%20Sheet.pdf) — Panasonic
+* [BMI270 datasheet](https://download.mikroe.com/documents/datasheets/bst-bmi270-ds000-2_datasheet.pdf) — Bosch Sensortec
+* [BME280 datasheet](https://www.mouser.com/datasheet/2/783/BST-BME280-DS002-1509607.pdf) — Bosch Sensortec
+* [CP2102N datasheet](https://www.silabs.com/documents/public/data-sheets/cp2102n-datasheet.pdf) — Silicon Labs
+* [PCA9517A datasheet](https://www.farnell.com/datasheets/2578416.pdf) — ON Semiconductor
+* [MCP3221 datasheet](https://ro.mouser.com/datasheet/2/268/mchp_s_a0002844534_1-2274805.pdf) — Microchip
+
+Software resources:
+
+* [Node-RED Dashboard](https://flows.nodered.org/node/node-red-dashboard) — Node-RED
+
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# ❓ Glossary
+
+* **ADC** — Analog-to-Digital Converter
+* **GUI** — Graphical User Interface
+* **I²C** — Inter-Integrated Circuit
+* **IMU** — Inertial Measurement Unit
+* **LDO** — Low-Dropout Regulator
+* **MQTT** — Message Queuing Telemetry Transport
+* **OOP** — Object-Oriented Programming
+* **PCB** — Printed Circuit Board
+* **PM** — Particulate Matter
+* **PTFE** — Polytetrafluoroethylene
+* **SAR** — Successive Approximation Register
+* **SMBus** — System Management Bus
+* **SPI** — Serial Peripheral Interface
+* **TVOC** — Total Volatile Organic Compounds
+* **UART** — Universal Asynchronous Receiver/Transmitter
+* **USB** — Universal Serial Bus
+* **VOC** — Volatile Organic Compounds

@@ -49,7 +49,7 @@ Additional hardware and dashboard photos are available in the [Hardware Part 1](
     - [CP2102N](#cp2102n)
     - [PCA9517A](#pca9517a)
     - [MCP3221](#mcp3221)
-- [Hardware implementation](#hardware-implementation)
+- [🧰 Hardware implementation](#-hardware-implementation)
   - [Device architecture](#device-architecture)
   - [Main board](#main-board)
     - [Layout](#layout)
@@ -427,9 +427,9 @@ Key specifications:
 The MCP3221 communicates with the ESP32 through the **I²C bus**, allowing analog sensor signals to be converted into digital measurements for processing by the firmware.
 
 
+<!-- ______________________________________________________________________________________________________________________________________________________ -->
+# 🧰 Hardware implementation
 
-<!-- ______________________________________________________________________________________________________________________________________________________ HARDWARE IMPLEMENTATION -->
-# Hardware implementation
 
 In this section, the hardware implementation of the device will be detailed.
 

@@ -1,6 +1,4 @@
 
-
-
 <div align="center">
     <h1>Indoor Air Quality Monitoring System</h1>
     <img src="docs/introduction/final_device.jpeg" width="65%" height="auto">
@@ -127,6 +125,8 @@ Additional terminology and external resources are available in the [Glossary](#-
 
 The system uses an **ESP32-WROVER-B** as the main controller and integrates dedicated sensors for environmental, air-quality, motion, and light measurements.
 
+The final sensor selection was a compromise between measurement performance, interface compatibility, physical integration, cost, and availability.
+
 The main components are listed below:
 
 | Component      | Quantity | Purpose                                                     | Link                                                                                                       |
@@ -163,14 +163,14 @@ Auxiliary components:
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ### ESP32-­WROVER­-IB
 
-**Figure 1: ESP32-WROVER-IB module**
+**Figure: ESP32-WROVER-IB module**
 
 <img src="docs/components/ESP32_module.jpg" width="25%" height="auto">
 
 The [ ESP32-­WROVER­-IB ]( https://www.espressif.com/sites/default/files/documentation/esp32-wrover-b_datasheet_en.pdf ) module from Espressif was selected as the main microcontroller for the system.
 It provides the processing capabilities, peripheral interfaces, and wireless connectivity required by the application.
 
-**Figure 2: ESP32 functional blocks**
+**Figure: ESP32 functional blocks**
 
 <img src="docs/components/ESP32_functional_block.jpg" width="50%" height="auto">
 
@@ -450,7 +450,7 @@ The device is divided into two PCBs based on sensor placement and functionality:
 * **Board P1 ( Main board )** — contains the ESP32, power supply, interface circuitry, ambient light sensor, and IMU. The PM and sound sensors are connected through external cables.
 * **Board P2 ( Sensor board )** — contains the sensors requiring direct exposure to the environment: temperature, humidity, CO₂, TVOC, and atmospheric pressure.
 
-**Figure 3: Device architecture**
+**Figure: Device architecture**
 
 <img src="docs/hardware_implementation/device_architecture/device_architecture.png" width="55%" height="auto">
 
@@ -462,7 +462,7 @@ The sensors operate with different logic levels ( 1.8 V, 3.3 V, and 5 V ), while
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ## Main board
 
-**Figure 4: Main board functional block — power supply**
+**Figure: Main board functional block — power supply**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_power_supply.png" width="30%" height="auto">
 
@@ -471,14 +471,14 @@ Three LDOs are connected in a daisy-chain configuration to distribute the voltag
 
 The main drawback is the power dissipated by the first LDO when converting the input voltage directly to 5 V, resulting in significant heat generation.
 
-**Figure 5: Main board functional block — programmer**
+**Figure: Main board functional block — programmer**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_programmer.png" width="40%" height="auto">
 
 The ESP32 is programmed through **UART** using the CP2102N USB-UART bridge and a micro-USB connector.
 The ESP32's integrated bootloader eliminates the need for a dedicated external programmer.
 
-**Figure 6: Main board functional block — microcontroller**
+**Figure: Main board functional block — microcontroller**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_microcontroller.png" width="30%" height="auto">
 
@@ -487,20 +487,20 @@ The two analog sensors are interfaced through dedicated MCP3221 ADCs, providing 
 
 Using separate buses improves system robustness. A malfunctioning sensor can hold the SDA line low and block its I²C bus; separating the sensors across two buses prevents a fault on one bus from affecting the remaining sensors.
 
-**Figure 7: Main board functional block — level shifter**
+**Figure: Main board functional block — level shifter**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_level_shifter.png" width="35%" height="auto">
 
 Two **PCA9517A I²C level shifters** are used to interface the ESP32's 3.3 V logic with sensors operating at **5 V and 1.8 V**.
 
-**Figure 8: Main board functional block — sensors**
+**Figure: Main board functional block — sensors**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_sensors.png" width="30%" height="auto">
 
 The **OPT3001 ambient light sensor** and **BMI270 6-axis IMU** are mounted directly on the main board.
 The **SN-GCJA5L particulate matter sensor** and **SEN0232 sound sensor** are connected through external cables.
 
-**Figure 9: Main board functional block — sound to I²C**
+**Figure: Main board functional block — sound to I²C**
 
 <img src="docs/hardware_implementation/main_board/functional_blocks/main_board_functional_block_sound_to_I2C.png" width="40%" height="auto">
 
@@ -511,7 +511,7 @@ The resulting measurement is then transferred to the ESP32 through the I²C bus.
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ### Layout
 
-**Figure 10: Main board layout**
+**Figure: Main board layout**
 
 <img src="docs/hardware_implementation/main_board/layout/main_board_layout.png" width="65%" height="auto">
 
@@ -520,7 +520,7 @@ The MCP3221 used for the sound sensor is placed close to the input connector to 
 
 The power distribution uses a **star topology**, while TVS protection devices are placed directly between the micro-USB connector and the CP2102N to improve ESD protection.
 
-**Figure 11: Main board top and bottom views**
+**Figure: Main board top and bottom views**
 
 <img src="docs/hardware_implementation/main_board/layout/main_board_3D_model_top.png" width="60%" height="auto">
 
@@ -534,13 +534,13 @@ All components except the **ESP32 and OPT3001** are mounted on the bottom side o
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ## Sensor board
 
-**Figure 12: Sensor board functional block — sensors**
+**Figure: Sensor board functional block — sensors**
 
 <img src="docs/hardware_implementation/sensor_board/functional_blocks/sensor_board_functional_block_sensors.png" width="50%" height="auto">
 
 The sensors requiring direct exposure to the environment are mounted on the sensor board: **ADT7410, SHT85, BME280, SCD30, and SGP40**.
 
-**Figure 13: Sensor board functional block — gas to I²C**
+**Figure: Sensor board functional block — gas to I²C**
 
 <img src="docs/hardware_implementation/sensor_board/functional_blocks/sensor_board_functional_block_TVOC_to_I2C.png" width="40%" height="auto">
 
@@ -551,13 +551,13 @@ The resulting measurement is transferred to the ESP32 through the I²C bus.
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ### Layout
 
-**Figure 14: Sensor board layout**
+**Figure: Sensor board layout**
 
 <img src="docs/hardware_implementation/sensor_board/layout/sensor_board_layout.png" width="60%" height="auto">
 
 The sensor placement was optimized to **minimize the PCB width** while maintaining direct exposure of the sensing elements to the surrounding air.
 
-**Figure 15: Sensor board top and bottom views**
+**Figure: Sensor board top and bottom views**
 
 <img src="docs/hardware_implementation/sensor_board/layout/sensor_board_3D_model_top.png" width="40%" height="auto">
 
@@ -569,11 +569,10 @@ The sensor board is mechanically secured using **two mounting screws** and inter
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ## Final device
 
-**Figure 16: Final device**
+**Figure: Final device**
 
 <img src="docs/hardware_implementation/final_device/final_device.jpeg" width="60%" height="auto">
 
-The assembled device is shown in **Figure 16**.
 The sensor board is connected to the main board through two board-to-board headers, while the particulate matter and sound sensors are connected through external cables.
 
 The assembly is secured using **four screws, four nuts, and four spacers**.
@@ -599,7 +598,7 @@ The main classes are:
 * **Sensor-specific classes** — implement device-specific initialization and measurement handling
 * **MCP3221xxT** — provides the I²C interface to the MCP3221 ADCs used by the analog sensors
 
-**Figure 17: I²C driver**
+**Figure: I²C driver**
 
 <img src="docs/software_implementation/microcontroller/I2C_DRIVER_class_structure.png" width="50%" height="auto">
 
@@ -610,7 +609,7 @@ A **timeout mechanism** prevents an unresponsive sensor from blocking the I²C b
 The `send_read_I2C_bus()` and `read_I2C_bus()` functions return a status indicating whether the operation completed successfully.
 
 
-**Figure 18: Sensor class**
+**Figure: Sensor class**
 
 <img src="docs/software_implementation/microcontroller/SENSOR_class_structure.png" width="50%" height="auto">
 
@@ -619,11 +618,9 @@ Sensor-specific classes inherit from this interface and implement the required o
 
 This abstraction allows the application to interact with different sensors through a **common interface**, while each implementation handles the communication and measurement details specific to its device.
 
-**Figure 19: Sensor inheritance structure**
+**Figure: Sensor inheritance structure**
 
 <img src="docs/software_implementation/microcontroller/Sensor_inheritance_structure.png" width="40%" height="auto">
-
-The sensor class hierarchy is shown in **Figure 19**.
 
 Digital sensors inherit directly from the **SENSOR** base class, while analog sensors inherit from both **SENSOR** and **MCP3221xxT**.
 The latter provides the I²C ADC functionality required to interface the analog sensors with the ESP32.
@@ -638,10 +635,6 @@ The technology stack and implementation are described in the following sections.
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ### Node-RED
 
-**Figure 20: Node-RED**
-
-<img src="docs/software_implementation/dashboard/node_red/Node_RED.png" width="15%" height="auto">
-
 **Node-RED** was used to implement the web-based dashboard and data-processing layer.
 Its flow-based architecture allows device communication, data processing, storage, and visualization to be connected as modular processing flows.
 
@@ -653,14 +646,10 @@ The modular architecture simplifies the integration of **additional devices, sen
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 ### MQTT
 
-**Figure 21: MQTT**
-
-<img src="docs/software_implementation/dashboard/mqtt/MQTT.png" width="30%" height="auto">
-
 Communication between the ESP32 and the dashboard is implemented using **MQTT** over TCP/IP.
 MQTT provides a lightweight publish-subscribe communication model suitable for IoT applications.
 
-**Figure 22: MQTT topology**
+**Figure: MQTT topology**
 
 <img src="docs/software_implementation/dashboard/mqtt/MQTT_topology.png" width="60%" height="auto">
 
@@ -682,11 +671,10 @@ Acquired sensor data is stored in a **CSV file**, providing persistent local sto
 
 Users can extract measurements either by selecting a specific time interval or by downloading the complete dataset.
 
-**Figure 23: Dashboard final interface**
+**Figure: Dashboard final interface**
 
 <img src="docs/software_implementation/dashboard/website/dashboard_final_interface.png" width="190%" height="auto">
 
-The final dashboard is shown in **Figure 23**.
 The interface is organized into four columns: three for displaying sensor measurements and one for data extraction.
 
 Sensor measurements are grouped by parameter type, allowing users to monitor the acquired data in real time and select specific datasets for further processing.

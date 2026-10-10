@@ -1,7 +1,16 @@
 
 <div align="center">
-    <h1>Indoor Air Quality Monitoring System</h1>
-    <img src="docs/introduction/final_device.jpeg" width="65%" height="auto">
+    <img src="docs/introduction/device_introduction.png" alt="Indoor Air Quality Monitoring System" width="100%" height="auto">
+    <p><em>A multi-sensor indoor environment monitor, built across the full stack: schematics and PCB layout, modular real-time firmware, MQTT over Wi-Fi, and a Node-RED dashboard for live visualization and data export.</em></p>
+    <p>
+        <img src="https://img.shields.io/badge/Embedded_C++-00599C?style=flat-square&logo=cplusplus&logoColor=white" alt="Embedded C++">
+        <img src="https://img.shields.io/badge/Architecture-Real--Time_·_Modular_·_Scalable-2E7D32?style=flat-square" alt="Real-time, modular, scalable firmware architecture">
+        <img src="https://img.shields.io/badge/ESP32-Wi--Fi-E7352C?style=flat-square&logo=espressif&logoColor=white" alt="ESP32 Wi-Fi">
+        <img src="https://img.shields.io/badge/MQTT-IoT_Telemetry-660066?style=flat-square&logo=mqtt&logoColor=white" alt="MQTT IoT telemetry">
+        <img src="https://img.shields.io/badge/Node--RED-Dashboard-8F0000?style=flat-square&logo=nodered&logoColor=white" alt="Node-RED dashboard">
+        <img src="https://img.shields.io/badge/Laptop-Backend_Host-A22846?style=flat-square" alt="Laptop backend host">
+        <img src="https://img.shields.io/badge/PCB_Design-2_Custom_Boards-A5915F?style=flat-square" alt="PCB design: two custom boards">
+    </p>
 </div>
 
 
